@@ -10,14 +10,25 @@ class BasicAnalysis:
   def uniq_tokens(self, dataset):
     # TODO: Fill in your code here
     return set()
-  
+
   # ==========================
   # @param dataset {DataSet}
   # @return [{Int}] the unique user ids in the dataset
   # ==========================
   def uniq_users(self, dataset):
     # TODO: Fill in your code here
-    return set()
+    dico=dict()
+    datainstance=DataInstance(self.file_handler.readline(),self.has_label)
+    while dataset.hasNext():
+        dico[datainstance.field[4]]=1+dico[datainstance.field[4]]
+        dataset.nextInstance()
+    list_uniq=set()
+    indice=0
+    for ids in dico.keys():
+        if dico[ids]==0:
+            list_uniq[indice]=ids
+            indice=indice+1
+    return list_uniq
 
   # ==========================
   # @param dataset {DataSet}

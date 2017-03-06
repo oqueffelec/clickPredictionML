@@ -2,7 +2,6 @@ import csv
 import mmap
 import time
 
-#classe permettant de lire/écrire dans le fichier csv
 class CPDialect(csv.Dialect):
     # Séparateur de champ
     delimiter = "|"
@@ -29,7 +28,7 @@ def mapcount(filename):
             lines += 1
     return lines
 
-fname = "/home/rasendrasoa/workspace/ClickPrediction/data/train.txt"
+fname = "/home/oqueffelec/Documents/PAO/data/train.txt"
 file = open(fname, "r")
 reader = csv.reader(file, CPDialect())
 
