@@ -1,5 +1,6 @@
 from analysis.DataSet import DataSet
 from util.EvalUtil import EvalUtil
+import time
 
 class BasicAnalysis:
   # ==========================
@@ -35,14 +36,17 @@ class BasicAnalysis:
     temp = 0
     count = 0
     while dataset.hasNext():
-      count += 1
-      temp = dataset.nextInstance().clicked + temp
-      ctr = temp/count
+      if dataset.nextInstance().clicked == 1:
+        count += 1
+
+    ctr = count/dataset.size
     return ctr
 
 if __name__ == '__main__':
   TRAININGSIZE = 2335859
   training = DataSet("/home/rasendrasoa/workspace/ClickPrediction/data/train.txt", True, TRAININGSIZE)
   analysis = BasicAnalysis()
+  t1 = time.clock()
   print(analysis.average_ctr(training))
-  print("Basic Analysis...")
+  t2 = time.clock()
+  print("temps de calcul pour la moyenne : ",t2-t1 ,'secondes')
