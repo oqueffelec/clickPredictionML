@@ -1,4 +1,5 @@
 import csv
+from scipy import sparse
 import mmap
 import time
 

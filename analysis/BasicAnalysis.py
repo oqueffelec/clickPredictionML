@@ -1,6 +1,11 @@
+from scipy import sparse
 from analysis.DataSet import DataSet
 from util.EvalUtil import EvalUtil
+from analysis.DataInstance import DataInstance
 import time
+import csv
+import numpy as np
+
 
 class BasicAnalysis:
   # ==========================
@@ -18,9 +23,9 @@ class BasicAnalysis:
   def uniq_users(self, dataset):
     # TODO: Fill in your code here
     dico=dict()
-    datainstance=DataInstance(self.file_handler.readline(),self.has_label)
+    datainstance=DataInstance(dataset.file_handler.readline(),dataset.has_label)
     while dataset.hasNext():
-        dico[datainstance.field[4]]=1+dico[datainstance.field[4]]
+        dico[datainstance.userid]=1+dico[datainstance.userid]
         dataset.nextInstance()
     list_uniq=set()
     indice=0
@@ -44,20 +49,25 @@ class BasicAnalysis:
   # @return {Double} the average CTR for a dataset
   # ==========================
   def average_ctr(self, dataset):
-    temp = 0
-    count = 0
-    while dataset.hasNext():
-      if dataset.nextInstance().clicked == 1:
-        count += 1
-
-    ctr = count/dataset.size
+    f = open(dataset.path)
+    h = f.readline()
+    ll = []
+    for l in f:
+      y = int(l[0])
+      ll.append(y)
+    x = np.array(ll)
+    f.close()
+    ctr = np.sum(x) / dataset.size
     return ctr
 
 if __name__ == '__main__':
   TRAININGSIZE = 2335859
   training = DataSet("/home/rasendrasoa/workspace/ClickPrediction/data/train.txt", True, TRAININGSIZE)
   analysis = BasicAnalysis()
+  ctr = analysis.average_ctr(training)
+
   t1 = time.clock()
-  print(analysis.average_ctr(training))
+  print("Average CTR = ",ctr)
   t2 = time.clock()
   print("temps de calcul pour la moyenne : ",t2-t1 ,'secondes')
+
