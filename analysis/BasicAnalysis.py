@@ -1,9 +1,7 @@
-from scipy import sparse
 from analysis.DataSet import DataSet
 from util.EvalUtil import EvalUtil
 from analysis.DataInstance import DataInstance
 import time
-import csv
 import numpy as np
 
 
@@ -13,8 +11,17 @@ class BasicAnalysis:
   # @return [{Int}] the unique tokens in the dataset
   # ==========================
   def uniq_tokens(self, dataset):
-    # TODO: Fill in your code here
-    return set()
+    instance = dataset.nextInstance()
+    while dataset.hasNext():
+        y = instance.tokens
+        # tokens uniques de la ligne i
+        x = np.unique(y)
+        instance = dataset.nextInstance()
+    X = np.array(x)
+    # tokens uniques de X = [x1 x2 ... xi ... xn]
+    X = np.unique(X)
+
+    return X
 
   # ==========================
   # @param dataset {DataSet}
@@ -50,7 +57,6 @@ class BasicAnalysis:
   # ==========================
   def average_ctr(self, dataset):
     f = open(dataset.path)
-    h = f.readline()
     ll = []
     for l in f:
       y = int(l[0])
@@ -67,7 +73,11 @@ if __name__ == '__main__':
   ctr = analysis.average_ctr(training)
 
   t1 = time.clock()
-  print("Average CTR = ",ctr)
+  print("Average CTR = ",ctr*100,"%")
   t2 = time.clock()
   print("temps de calcul pour la moyenne : ",t2-t1 ,'secondes')
 
+  t1 = time.clock()
+  X = analysis.uniq_tokens(training)
+  t2 = time.clock()
+  print('temps unique tokens ',t2-t1,"secondes")
