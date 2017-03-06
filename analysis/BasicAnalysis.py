@@ -85,4 +85,17 @@ if __name__ == '__main__':
   #     i=i+1
 
   unique_users_age=analysis.uniq_users_per_age_group(training)
-print(unique_users_age[0])
+print("nbre de unique tokens pour l'age 0 : ", len(unique_users_age[0]))
+print("\n")
+print("nbre de unique tokens pour l'age 1 : ", len(unique_users_age[1]))
+print("\n")
+print("nbre de unique tokens pour l'age 2 : ", len(unique_users_age[2]))
+print("\n")
+print("nbre de unique tokens pour l'age 3 : ",len(unique_users_age[3]))
+print("\n")
+print("nbre de unique tokens pour l'age 4 : " ,len(unique_users_age[4]))
+print("\n")
+print("nbre de unique tokens pour l'age 5 : ", len(unique_users_age[5]))
+print("\n")
+print("nbre de unique tokens pour l'age 6 : ", len(unique_users_age[6]))
+print("\n")
