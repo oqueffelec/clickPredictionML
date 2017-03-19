@@ -1,8 +1,9 @@
-from analysis.DataSet import DataSet
-from util.EvalUtil import EvalUtil
-from analysis.DataInstance import DataInstance
 import time
+
 import numpy as np
+
+from analysis.DataInstance import DataInstance
+from analysis.DataSet import DataSet
 
 
 class BasicAnalysis:
@@ -18,7 +19,7 @@ class BasicAnalysis:
         x = np.unique(y)
         instance = dataset.nextInstance()
     X = np.array(x)
-    # tokens uniques de X = [x1 x2 ... xi ... xn]
+    # tokens uniques de X = [x1' x2' ... xi' ... xn']'
     X = np.unique(X)
 
     return X
@@ -67,17 +68,21 @@ class BasicAnalysis:
     return ctr
 
 if __name__ == '__main__':
+
   TRAININGSIZE = 2335859
-  training = DataSet("/home/rasendrasoa/workspace/ClickPrediction/data/train.txt", True, TRAININGSIZE)
+  fname = "/home/rasendrasoa/workspace/ClickPrediction/data/train.txt"
+  training = DataSet(fname, True, TRAININGSIZE)
   analysis = BasicAnalysis()
-  ctr = analysis.average_ctr(training)
 
   t1 = time.clock()
-  print("Average CTR = ",ctr*100,"%")
+  ctr = analysis.average_ctr(training)
   t2 = time.clock()
+  print("Average CTR = ",ctr*100,"%")
   print("temps de calcul pour la moyenne : ",t2-t1 ,'secondes')
+
 
   t1 = time.clock()
   X = analysis.uniq_tokens(training)
   t2 = time.clock()
-  print('temps unique tokens ',t2-t1,"secondes")
+  print('there are ',X.size,' unique tokens')
+  print('temps de calcul unique tokens ', t2 - t1, "secondes")
