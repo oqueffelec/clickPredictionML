@@ -17,7 +17,7 @@ x10 = np.random.rand(10,1)
 x = np.array([x1,x2,x3,x4,x5,x6,x7,x8,x9,x10])
 y = np.array([0,0,1,0,1,1,1,1,1,0])
 
-print(x.size)
+print(x.shape)
 print(y[1])
 
 n = 0.001;
