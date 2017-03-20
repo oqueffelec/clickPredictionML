@@ -23,12 +23,13 @@ print(y[1])
 n = 0.001;
 w_old = np.ones((10,1))
 
-j = 1
+n = 10
 
-while j<10:
+for j in range(n):
     h=(y[j]-x[:,j].T*w_old)*x[:,j]
     w_new=w_old-h*n;
     w_old=w_new;
-    j+=1
 
-
+F = []
+for i in range(n):
+    F[i] = x[:,i].T*w_new
