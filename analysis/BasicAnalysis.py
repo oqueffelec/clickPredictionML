@@ -1,5 +1,5 @@
 import time
-<<<<<<< HEAD
+
 
 import numpy as np
 
@@ -11,14 +11,13 @@ from analysis.DataSet import DataSet
 import csv
 import numpy as np
 
->>>>>>> 0c6a7a6dc0bf206c37ef433a36d33d9d42670f11
 class BasicAnalysis:
   # ==========================
   # @param dataset {DataSet}
   # @return [{Int}] the unique tokens in the dataset
   # ==========================
   def uniq_tokens(self, dataset):
-<<<<<<< HEAD
+
     instance = dataset.nextInstance()
     while dataset.hasNext():
         y = instance.tokens
@@ -33,7 +32,7 @@ class BasicAnalysis:
 =======
     # TODO: Fill in your code here
     return set()
->>>>>>> 0c6a7a6dc0bf206c37ef433a36d33d9d42670f11
+
 
   # ==========================
   # @param dataset {DataSet}
@@ -97,7 +96,7 @@ class BasicAnalysis:
 if __name__ == '__main__':
 
   TRAININGSIZE = 2335859
-<<<<<<< HEAD
+
   fname = "/home/rasendrasoa/workspace/ClickPrediction/data/train.txt"
   training = DataSet(fname, True, TRAININGSIZE)
   analysis = BasicAnalysis()
@@ -139,4 +138,4 @@ print("nbre de unique tokens pour l'age 5 : ", len(unique_users_age[5]))
 print("\n")
 print("nbre de unique tokens pour l'age 6 : ", len(unique_users_age[6]))
 print("\n")
->>>>>>> 0c6a7a6dc0bf206c37ef433a36d33d9d42670f11
+

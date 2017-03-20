@@ -92,19 +92,29 @@ class LogisticRegression:
   # @param dataset {DataSet}
   # ==========================
   def predict(self, weights, dataset):
-    # TODO: Fill in your code here
-    return []
+    X = np.zeros((10,5))
+    n = 10
+    W = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position]
+    for i in range(n):
+      instance = dataset.nextInstance()
+      X[i,:] = [instance.clicked,instance.age, instance.gender, instance.depth, instance.position]
+    F = np.inner(W,X)
+
+    return F
 
 
 if __name__ == '__main__':
   # TODO: Fill in your code here
-  fname = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/train.txt"
+  fname = "/home/rasendrasoa/workspace/ClickPrediction/data/train.txt"
   TRAININGSIZE=10
   training = DataSet(fname, True, TRAININGSIZE)
   instance= training.nextInstance()
   weights=Weights()
   logisticregression=LogisticRegression()
   prod_scal = logisticregression.compute_weight_feature_product(weights,instance)
-  print "Training Logistic Regression..."
+  print("Training Logistic Regression...")
   print(prod_scal)
-  print "Training Logistic Regression..."
+  print("Training Logistic Regression...")
+
+  F = logisticregression.predict(weights,training)
+  print(F)

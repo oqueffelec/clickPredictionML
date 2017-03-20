@@ -26,6 +26,8 @@ print("taille du vecteur w_old :",w_old.shape)
 
 n = 10
 
+# weigths update
+
 for j in range(n):
     h = ( y[j] - x[:,j] * w_old ) * x[:,j]
     w_new = w_old - n*h
@@ -34,10 +36,10 @@ for j in range(n):
 print(w_new.shape)
 print(np.transpose(x[:,0]).shape)
 
-# les prédictions
+# predicted label ?
 
-F = np.zeros((10,1))
+y = np.zeros((10,1))
 
 for i in range(n):
-    F[i] = np.dot(np.transpose(x[:,i]),w_new)
-    print(F[i])
+    y[i] = np.dot(np.transpose(x[:,i]),w_new)
+#   print(y[i])
