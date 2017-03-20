@@ -19,6 +19,7 @@ y = np.array([0,0,1,0,1,1,1,1,1,0])
 
 print(x.shape)
 print(y[1])
+print(x[1])
 
 n = 0.001;
 w_old = np.ones((10,1))
@@ -32,4 +33,4 @@ for j in range(n):
 
 F = []
 for i in range(n):
-    F[i] = x[:,i].T*w_new
+    F[i] = x[i].T*w_new
