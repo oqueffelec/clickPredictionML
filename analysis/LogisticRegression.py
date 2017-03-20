@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 from analysis.DataSet import DataSet
 from util.EvalUtil import EvalUtil
@@ -12,7 +13,7 @@ class Weights:
     # to keep track of the access timestamp of feature weights.
     #   use this to do delayed regularization.
     self.access_time = {}
-    
+
   def __str__(self):
     formatter = "{0:.2f}"
     string = ""
@@ -23,7 +24,7 @@ class Weights:
     string += "Age: " + formatter.format(self.w_age) + "\n"
     string += "Tokens: " + str(self.w_tokens) + "\n"
     return string
-  
+
   # @return {Double} the l2 norm of this weight vector
   def l2_norm(self):
     l2 = self.w0 * self.w0 +\
@@ -34,7 +35,7 @@ class Weights:
     for w in self.w_tokens.values():
       l2 += w * w
     return math.sqrt(l2)
-  
+
   # @return {Int} the l2 norm of this weight vector
   def l0_norm(self):
     return 4 + len(self.w_tokens)
@@ -49,8 +50,10 @@ class LogisticRegression:
   # ==========================
   def compute_weight_feature_product(self, weights, instance):
     # TODO: Fill in your code here
-    return 0.0
-  
+    w=[weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position]
+    vect_inst=[instance.clicked, instance.age, instance.gender, instance.depth, instance.position]
+    return np.inner(w,vect_inst)
+
   # ==========================
   # Apply delayed regularization to the weights corresponding to the given
   # tokens.
@@ -76,11 +79,11 @@ class LogisticRegression:
       # Your code: perform delayed regularization
 
       # Your code: predict the label, record the loss
-  
+
       # Your code: compute w0 + <w, x>, and gradient
-      
+
       # Your code: update weights along the negative gradient
-      
+
     return weights
 
   # ==========================
@@ -91,8 +94,17 @@ class LogisticRegression:
   def predict(self, weights, dataset):
     # TODO: Fill in your code here
     return []
-  
-  
+
+
 if __name__ == '__main__':
   # TODO: Fill in your code here
+  fname = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/train.txt"
+  TRAININGSIZE=10
+  training = DataSet(fname, True, TRAININGSIZE)
+  instance= training.nextInstance()
+  weights=Weights()
+  logisticregression=LogisticRegression()
+  prod_scal = logisticregression.compute_weight_feature_product(weights,instance)
+  print "Training Logistic Regression..."
+  print(prod_scal)
   print "Training Logistic Regression..."
