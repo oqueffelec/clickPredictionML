@@ -1,6 +1,6 @@
 import numpy as np
 
-#problème avec data duu sujet
+#problème avec data du sujet
 #exemple pour valeurs random
 
 x1 = np.random.rand(10,1)
@@ -18,19 +18,26 @@ x = np.array([x1,x2,x3,x4,x5,x6,x7,x8,x9,x10])
 y = np.array([0,0,1,0,1,1,1,1,1,0])
 
 print(x.shape)
-print(y[1])
-print(x[1])
+print(y.shape)
 
 n = 0.001;
 w_old = np.ones((10,1))
+print("taille du vecteur w_old :",w_old.shape)
 
 n = 10
 
 for j in range(n):
-    h=(y[j]-x[:,j].T*w_old)*x[:,j]
-    w_new=w_old-h*n;
-    w_old=w_new;
+    h = ( y[j] - x[:,j] * w_old ) * x[:,j]
+    w_new = w_old - n*h
+    w_old = w_new;
 
-F = []
+print(w_new.shape)
+print(np.transpose(x[:,0]).shape)
+
+# les prédictions
+
+F = np.zeros((10,1))
+
 for i in range(n):
-    F[i] = x[i].T*w_new
+    F[i] = np.dot(np.transpose(x[:,i]),w_new)
+    print(F[i])
