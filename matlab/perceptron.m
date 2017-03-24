@@ -17,10 +17,15 @@ y=[-1 1 1 1];
 % Algo perceptron
 w1=zeros(n,1);
 k=0;
-for i=1:l
-    if(y(i)*(x(i,:)*w1)<=0)
-        w1=w1+y(i)*x(i,:)';
-        k=k+1;
+K=67;
+for compteur=1:K
+    indice=randperm(l);
+    for i=1:l
+        i=indice(i);
+        if(y(i)*(x(i,:)*w1)<=0)
+            w1=w1+y(i)*x(i,:)';
+            k=k+1;
+        end
     end
 end
 
@@ -52,10 +57,15 @@ y=[-1 -1 -1 1];
 % Algo perceptron
 w2=zeros(n,1);
 k=0;
-for i=1:l
-    if(y(i)*(x(i,:)*w2)<=0)
-        w2=w2+y(i)*x(i,:)';
-        k=k+1;
+K=57;
+for compteur=1:K
+    indice=randperm(l);
+    for i=1:l
+        i=indice(i);
+        if(y(i)*(x(i,:)*w2)<=0)
+            w2=w2+y(i)*x(i,:)';
+            k=k+1;
+        end
     end
 end
 
