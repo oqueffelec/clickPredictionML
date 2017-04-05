@@ -92,15 +92,12 @@ class LogisticRegression:
   # @param dataset {DataSet}
   # ==========================
   def predict(self, weights, dataset):
-    X = np.zeros((10,5))
-    n = 10
-    W = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position]
-    for i in range(n):
+    activation = weights.w0
+    W = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position, weights.w_tokens]
+    for i in range(weights.l0_norm()):
       instance = dataset.nextInstance()
-      X[i,:] = [instance.clicked,instance.age, instance.gender, instance.depth, instance.position]
-    F = np.inner(W,X)
-
-    return F
+      activation += LogisticRegression().compute_weight_feature_product(weights,instance)
+    return 1.0 if activation > 0.0 else 0.0
 
 
 if __name__ == '__main__':
@@ -117,4 +114,5 @@ if __name__ == '__main__':
   print("Training Logistic Regression...")
 
   F = logisticregression.predict(weights,training)
-  print(F)
+  print("prediction :",F)
+  print(weights)
