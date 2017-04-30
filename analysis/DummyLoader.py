@@ -21,7 +21,7 @@ class DummyLoader:
     if count < dataset.size:
       print( "Warning: the real size of the data is less than the input size: %d < %d" % (dataset.size, count))
     print ("Done. Total processed instances: %d" % count)
-    
+
     # Important: remember to reset the dataset everytime
     # you are done with processing.
     dataset.reset()
@@ -29,11 +29,11 @@ class DummyLoader:
 if __name__ == '__main__':
   loader = DummyLoader()
   size = 10
-  
+
   # prints a dataset from the training data with size = 10;
-  training = DataSet("/home/rasendrasoa/workspace/ClickPrediction/data/train.txt", True, size)
+  training = DataSet("/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt", True, size)
   loader.scan_and_print(training)
-  
+
   # prints a dataset from the test data with size = 10;
-  testing = DataSet("/home/rasendrasoa/workspace/ClickPrediction/data/test.txt", False, size)
+  testing = DataSet("/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt", False, size)
   loader.scan_and_print(testing)

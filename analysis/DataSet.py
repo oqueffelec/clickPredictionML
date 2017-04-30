@@ -6,10 +6,10 @@ from util.HashUtil import HashUtil
 class DataSet:
   TRAININGSIZE = 2335859
   TESTINGSIZE = 1016552
-  
+
   # ==========================
   # Creates a dataset from the given path.
-  # 
+  #
   # @param path {String} Path to the data file living on the disk.
   # @param is_training {Boolean} True if the input is training data.
   # @param size {Int} The size of the dataset, can be SMALLER than the
@@ -27,7 +27,7 @@ class DataSet:
   # ==========================
   def hasNext(self):
     return self.counter < self.size
-  
+
   # ==========================
   # @return the next data instance.
   # ==========================
@@ -35,7 +35,14 @@ class DataSet:
     line = self.file_handler.readline()
     self.counter += 1
     return DataInstance(line, self.has_label)
-  
+
+  def nextIemeInstance(self,integer):
+    self.reset()
+    for i in range(1,integer-1):
+        line = self.file_handler.readline()
+        self.counter += 1
+    return self.nextInstance()
+
   # ==========================
   # @param featuredim {Int}
   # @param personal {Boolean}
@@ -45,7 +52,7 @@ class DataSet:
     line = self.file_handler.readline()
     self.counter += 1
     return HashedDataInstance(line, self.has_label, featuredim, personal)
-  
+
   # ==========================
   # Reset the dataset. Must be called when ever the same dataset need to be
   # reused.

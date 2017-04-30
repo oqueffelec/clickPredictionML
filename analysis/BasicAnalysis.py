@@ -7,7 +7,6 @@ from analysis.DataInstance import DataInstance
 from analysis.DataSet import DataSet
 
 
-=======
 import csv
 import numpy as np
 
@@ -29,7 +28,6 @@ class BasicAnalysis:
     X = np.unique(X)
 
     return X
-=======
     # TODO: Fill in your code here
     return set()
 
@@ -97,7 +95,7 @@ if __name__ == '__main__':
 
   TRAININGSIZE = 2335859
 
-  fname = "/home/rasendrasoa/workspace/ClickPrediction/data/train.txt"
+  fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
   training = DataSet(fname, True, TRAININGSIZE)
   analysis = BasicAnalysis()
 
@@ -113,7 +111,6 @@ if __name__ == '__main__':
   t2 = time.clock()
   print('there are ',X.size,' unique tokens')
   print('temps de calcul unique tokens ', t2 - t1, "secondes")
-=======
   training = DataSet("/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt", True, TRAININGSIZE)
   analysis = BasicAnalysis()
 
@@ -138,4 +135,3 @@ print("nbre de unique tokens pour l'age 5 : ", len(unique_users_age[5]))
 print("\n")
 print("nbre de unique tokens pour l'age 6 : ", len(unique_users_age[6]))
 print("\n")
-

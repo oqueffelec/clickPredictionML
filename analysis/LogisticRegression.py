@@ -74,6 +74,20 @@ class LogisticRegression:
   # ==========================
   def train(self, dataset, lambduh, step, avg_loss):
     weights = Weights()
+    w=[weights.w_age, weights.w_gender, weights.w_depth, weights.w_position,weights.w0]
+    l = dataset.size
+    k = 6
+    for count in range(1,k):
+        indice = np.random.permutation(range(l))
+        for i in range(1,l):
+            i = indice[i]
+            instance = dataset.nextIemeInstance(i)
+            x=[instance.age, instance.gender, instance.depth, instance.position,1]
+            y=instance.clicked
+            if(np.dot(y,np.inner(x,w))<=0):
+                w += np.dot(y,x)
+
+
     # TODO: Fill in your code here. The structure should look like:
     # For each data point:
       # Your code: perform delayed regularization
@@ -83,7 +97,11 @@ class LogisticRegression:
       # Your code: compute w0 + <w, x>, and gradient
 
       # Your code: update weights along the negative gradient
-
+    weights.w_age=w[0]
+    weights.w_gender=w[1]
+    weights.w_depth=w[2]
+    weights.w_position=w[3]
+    weights.w0=w[4]
     return weights
 
   # ==========================
@@ -102,17 +120,24 @@ class LogisticRegression:
 
 if __name__ == '__main__':
   # TODO: Fill in your code here
-  fname = "/home/rasendrasoa/workspace/ClickPrediction/data/train.txt"
-  TRAININGSIZE=10
+  fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
+  TRAININGSIZE=900
   training = DataSet(fname, True, TRAININGSIZE)
-  instance= training.nextInstance()
-  weights=Weights()
   logisticregression=LogisticRegression()
-  prod_scal = logisticregression.compute_weight_feature_product(weights,instance)
-  print("Training Logistic Regression...")
-  print(prod_scal)
-  print("Training Logistic Regression...")
+  poids=logisticregression.train(training,0,0,0)
+  print(poids)
+  print(logisticregression.predict(poids,training))
 
-  F = logisticregression.predict(weights,training)
-  print("prediction :",F)
-  print(weights)
+  #
+  # instance= training.nextInstance()
+  # weights=Weights()
+  # logisticregression=LogisticRegression()
+  # prod_scal = logisticregression.compute_weight_feature_product(weights,instance)
+  # print("Training Logistic Regression...")
+  # print(prod_scal)
+  # print("Training Logistic Regression...")
+  #
+  # F = logisticregression.predict(weights,training)
+  # print("prediction :",F)
+  # print(weights)
+  #
