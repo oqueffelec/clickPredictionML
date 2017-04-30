@@ -110,12 +110,22 @@ class LogisticRegression:
   # @param dataset {DataSet}
   # ==========================
   def predict(self, weights, dataset):
-    activation = weights.w0
-    W = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position, weights.w_tokens]
-    for i in range(weights.l0_norm()):
-      instance = dataset.nextInstance()
-      activation += LogisticRegression().compute_weight_feature_product(weights,instance)
-    return 1.0 if activation > 0.0 else 0.0
+    for i in range(1,dataset.size):
+        instance = dataset.nextInstance()
+        activation = LogisticRegression().compute_weight_feature_product(weights,instance)
+        y=np.zeros(dataset.size)
+        if(activation>0.0):
+            y[i]=1
+        else:
+            y[i]=0
+    return y
+
+    # activation = weights.w0
+    # W = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position, weights.w_tokens]
+    # for i in range(weights.l0_norm()):
+    #   instance = dataset.nextInstance()
+    #   activation += LogisticRegression().compute_weight_feature_product(weights,instance)
+    # return 1.0 if activation > 0.0 else 0.0
 
 
 if __name__ == '__main__':
@@ -126,7 +136,12 @@ if __name__ == '__main__':
   logisticregression=LogisticRegression()
   poids=logisticregression.train(training,0,0,0)
   print(poids)
-  print(logisticregression.predict(poids,training))
+  fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+  TRAININGSIZE=500
+  testing = DataSet(fname, False, TRAININGSIZE)
+  res=logisticregression.predict(poids,testing)
+  print(res)
+
 
   #
   # instance= training.nextInstance()
