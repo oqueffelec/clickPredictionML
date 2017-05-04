@@ -51,7 +51,7 @@ class LogisticRegression:
   def compute_weight_feature_product(self, weights, instance):
     # TODO: Fill in your code here
     w=[weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position]
-    vect_inst=[instance.clicked, instance.age, instance.gender, instance.depth, instance.position]
+    vect_inst=[1, instance.age, instance.gender, instance.depth, instance.position]
     return np.inner(w,vect_inst)
 
   # ==========================
@@ -74,18 +74,21 @@ class LogisticRegression:
   # ==========================
   def train(self, dataset, lambduh, step, avg_loss):
     weights = Weights()
-    w=[weights.w_age, weights.w_gender, weights.w_depth, weights.w_position,weights.w0]
-    l = dataset.size
-    k = 6
-    for count in range(1,k):
-        indice = np.random.permutation(range(l))
-        for i in range(1,l):
-            i = indice[i]
-            instance = dataset.nextIemeInstance(i)
-            x=[instance.age, instance.gender, instance.depth, instance.position,1]
-            y=instance.clicked
-            if(np.dot(y,np.inner(x,w))<=0):
-                w += np.dot(y,x)
+    n_epoch=6
+    for epoch in range(n_epoch):
+      sum_error = 0.0
+      while(dataset.hasNext()):
+        prediction = self.predict(weights,dataset)
+        instance=dataset.nextInstance()
+        error = instance.clicked - prediction
+        sum_error += error**2
+        weights.w0 = weights.w0 + step * error
+        weights.w_age = weights.w_age + step * error * instance.age
+        weights.w_gender = weights.w_gender + step * error * instance.gender
+        weights.w_depth = weights.w_depth + step * error * instance.depth
+        weights.w_position = weights.w_position + step * error * instance.position
+    dataset.reset()
+    return weights
 
 
     # TODO: Fill in your code here. The structure should look like:
@@ -97,12 +100,7 @@ class LogisticRegression:
       # Your code: compute w0 + <w, x>, and gradient
 
       # Your code: update weights along the negative gradient
-    weights.w_age=w[0]
-    weights.w_gender=w[1]
-    weights.w_depth=w[2]
-    weights.w_position=w[3]
-    weights.w0=w[4]
-    return weights
+
 
   # ==========================
   # Use the weights to predict the CTR for a dataset.
@@ -110,49 +108,25 @@ class LogisticRegression:
   # @param dataset {DataSet}
   # ==========================
   def predict(self, weights, dataset):
-    for i in range(1,dataset.size):
-        instance = dataset.nextInstance()
-        activation = LogisticRegression().compute_weight_feature_product(weights,instance)
-        y=np.zeros(dataset.size)
-        if(activation>0.0):
-            y[i]=1
-        else:
-            y[i]=0
-    return y
+    instance=dataset.nextInstance()
+    activation= self.compute_weight_feature_product(weights,instance)
+    return 1.0 if activation >= 0.0 else 0.0
 
-    # activation = weights.w0
-    # W = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position, weights.w_tokens]
-    # for i in range(weights.l0_norm()):
-    #   instance = dataset.nextInstance()
-    #   activation += LogisticRegression().compute_weight_feature_product(weights,instance)
-    # return 1.0 if activation > 0.0 else 0.0
 
 
 if __name__ == '__main__':
   # TODO: Fill in your code here
   fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
-  TRAININGSIZE=900
+  TRAININGSIZE=90000
   training = DataSet(fname, True, TRAININGSIZE)
   logisticregression=LogisticRegression()
-  poids=logisticregression.train(training,0,0,0)
+  poids=logisticregression.train(training,0,0.1,0)
   print(poids)
   fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
-  TRAININGSIZE=500
-  testing = DataSet(fname, False, TRAININGSIZE)
-  res=logisticregression.predict(poids,testing)
-  print(res)
-
-
-  #
-  # instance= training.nextInstance()
-  # weights=Weights()
-  # logisticregression=LogisticRegression()
-  # prod_scal = logisticregression.compute_weight_feature_product(weights,instance)
-  # print("Training Logistic Regression...")
-  # print(prod_scal)
-  # print("Training Logistic Regression...")
-  #
-  # F = logisticregression.predict(weights,training)
-  # print("prediction :",F)
-  # print(weights)
-  #
+  TESTINGSIZE=500
+  testing = DataSet(fname, False, TESTINGSIZE)
+  res=np.empty(TESTINGSIZE)
+  for boucle in range(TESTINGSIZE):
+      res[boucle]=logisticregression.predict(poids,testing)
+      if(res[boucle]==0.0):
+        print(boucle)
