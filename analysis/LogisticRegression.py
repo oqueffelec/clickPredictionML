@@ -50,9 +50,14 @@ class LogisticRegression:
   # ==========================
   def compute_weight_feature_product(self, weights, instance):
     # TODO: Fill in your code here
-    w=[weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position]
-    vect_inst=[1, instance.age, instance.gender, instance.depth, instance.position]
-    return np.inner(w,vect_inst)
+    tab_itokens = np.asarray(instance.tokens)
+    tab_wtokens = np.zeros(np.shape(tab_itokens))
+    for v in weights.w_tokens.values():
+        np.append(tab_wtokens,v)
+    w = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position]
+    vect_inst = [1, instance.age, instance.gender, instance.depth, instance.position]
+    tab_itokens = np.asarray(instance.tokens)
+    return np.inner(w,vect_inst)#+np.inner(tab_wtokens,tab_itokens)
 
   # ==========================
   # Apply delayed regularization to the weights corresponding to the given
@@ -87,6 +92,8 @@ class LogisticRegression:
         weights.w_gender = weights.w_gender + step * error * instance.gender
         weights.w_depth = weights.w_depth + step * error * instance.depth
         weights.w_position = weights.w_position + step * error * instance.position
+        for key,value in weights.w_tokens.items():
+            value = value + step*error*instance.tokens[key]
     dataset.reset()
     return weights
 
@@ -116,17 +123,15 @@ class LogisticRegression:
 
 if __name__ == '__main__':
   # TODO: Fill in your code here
-  fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
+  fname = "C:\Data\data/train.txt"
   TRAININGSIZE=90000
   training = DataSet(fname, True, TRAININGSIZE)
   logisticregression=LogisticRegression()
   poids=logisticregression.train(training,0,0.1,0)
   print(poids)
-  fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+  fname = "C:\Data/data/test.txt"
   TESTINGSIZE=500
   testing = DataSet(fname, False, TESTINGSIZE)
   res=np.empty(TESTINGSIZE)
-  for boucle in range(TESTINGSIZE):
-      res[boucle]=logisticregression.predict(poids,testing)
-      if(res[boucle]==0.0):
-        print(boucle)
+  for k,v in poids.w_tokens.items():
+    print(k,v)
