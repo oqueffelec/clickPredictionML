@@ -93,7 +93,7 @@ class LogisticRegression:
         weights.w_depth = weights.w_depth + step * error * instance.depth
         weights.w_position = weights.w_position + step * error * instance.position
         for key,value in weights.w_tokens.items():
-            value = value + step*error*instance.tokens[key]
+            weights.w_tokens[key] = value + step*error*instance.tokens[key]
     dataset.reset()
     return weights
 
@@ -135,3 +135,4 @@ if __name__ == '__main__':
   res=np.empty(TESTINGSIZE)
   for k,v in poids.w_tokens.items():
     print(k,v)
+  print(len(poids.w_tokens))
