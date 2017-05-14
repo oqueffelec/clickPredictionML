@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import scipy.sparse
 
 from analysis.DataSet import DataSet
 from util.EvalUtil import EvalUtil
@@ -119,20 +120,28 @@ class LogisticRegression:
     activation= self.compute_weight_feature_product(weights,instance)
     return 1.0 if activation >= 0.0 else 0.0
 
-
+  # Create features array x
+  def featuresArray(self,instance):
+    temp = np.ones((len(instance.tokens)))
+    features = np.array([1.0, float(instance.age), float(instance.gender), float(instance.depth), float(instance.position)])
+    np.concatenate(features,temp)
+    return features
 
 if __name__ == '__main__':
   # TODO: Fill in your code here
-  fname = "C:\Data\data/train.txt"
+  fname = "/home/rasendrasoa/workspace/data/train.txt"
   TRAININGSIZE=90000
   training = DataSet(fname, True, TRAININGSIZE)
   logisticregression=LogisticRegression()
   poids=logisticregression.train(training,0,0.1,0)
-  print(poids)
-  fname = "C:\Data/data/test.txt"
+  print(type(poids))
+  fname = "/home/rasendrasoa/workspace/data/test.txt"
   TESTINGSIZE=500
   testing = DataSet(fname, False, TESTINGSIZE)
   res=np.empty(TESTINGSIZE)
   for k,v in poids.w_tokens.items():
     print(k,v)
   print(len(poids.w_tokens))
+  instance = training.nextInstance()
+  print(len(training.nextInstance().tokens))
+  features = logisticregression.featuresArray(training.nextInstance())
