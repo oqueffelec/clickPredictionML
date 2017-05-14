@@ -52,14 +52,9 @@ class LogisticRegression:
     # ==========================
     def compute_weight_feature_product(self, weights, instance):
         # TODO: Fill in your code here
-        tab_itokens = np.asarray(instance.tokens)
-        tab_wtokens = np.zeros(np.shape(tab_itokens))
-        for v in weights.w_tokens.values():
-            np.append(tab_wtokens, v)
-        w = [weights.w0, weights.w_age, weights.w_gender, weights.w_depth, weights.w_position]
-        vect_inst = [1, instance.age, instance.gender, instance.depth, instance.position]
-        tab_itokens = np.asarray(instance.tokens)
-        return np.inner(w, vect_inst)  # +np.inner(tab_wtokens,tab_itokens)
+        w = weights
+        x = self.featureVector(instance)
+        return np.dot(w, x)
 
     # ==========================
     # Apply delayed regularization to the weights corresponding to the given
@@ -80,7 +75,10 @@ class LogisticRegression:
     # @return {Weights} the final trained weights.
     # ==========================
     def train(self, dataset, lambduh, step, avg_loss):
-        weights = Weights()
+        #weights = Weights()
+        maxTokenValue = 1070659
+        offset = 5
+        weights = lil_matrix((maxTokenValue + offset + 1, 1))
         n_epoch = 6
         for epoch in range(n_epoch):
             sum_error = 0.0
@@ -88,14 +86,18 @@ class LogisticRegression:
                 prediction = self.predict(weights, dataset)
                 instance = dataset.nextInstance()
                 error = instance.clicked - prediction
-                sum_error += error ** 2
-                weights.w0 = weights.w0 + step * error
-                weights.w_age = weights.w_age + step * error * instance.age
-                weights.w_gender = weights.w_gender + step * error * instance.gender
-                weights.w_depth = weights.w_depth + step * error * instance.depth
-                weights.w_position = weights.w_position + step * error * instance.position
-                for key, value in weights.w_tokens.items():
-                    weights.w_tokens[key] = value + step * error * instance.tokens[key]
+                grad = error*step
+                x = self.featureVector(instance)
+                x *= grad
+                weights += x
+                # sum_error += error ** 2
+                # weights.w0 = weights.w0 + step * error
+                # weights.w_age = weights.w_age + step * error * instance.age
+                # weights.w_gender = weights.w_gender + step * error * instance.gender
+                # weights.w_depth = weights.w_depth + step * error * instance.depth
+                # weights.w_position = weights.w_position + step * error * instance.position
+                # for key, value in weights.w_tokens.items():
+                #     weights.w_tokens[key] = value + step * error * instance.tokens[key]
         dataset.reset()
         return weights
 
@@ -166,4 +168,4 @@ if __name__ == '__main__':
     print(features)
     print(index)
     x = logisticregression.featureVector(instance)
-    print(x.nonzero())
+    print(x.tocsc())
