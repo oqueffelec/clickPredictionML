@@ -124,7 +124,7 @@ class LogisticRegression:
   def featuresArray(self,instance):
     temp = np.ones((len(instance.tokens)))
     features = np.array([1.0, float(instance.age), float(instance.gender), float(instance.depth), float(instance.position)])
-    np.concatenate(features,temp)
+    features = np.concatenate((features,temp),axis=0)
     return features
 
 if __name__ == '__main__':
@@ -145,3 +145,4 @@ if __name__ == '__main__':
   instance = training.nextInstance()
   print(len(training.nextInstance().tokens))
   features = logisticregression.featuresArray(training.nextInstance())
+  print(len(features))
