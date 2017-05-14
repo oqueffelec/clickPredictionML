@@ -1,6 +1,6 @@
 import math
 import numpy as np
-import scipy.sparse
+from scipy.sparse import lil_matrix
 
 from analysis.DataSet import DataSet
 from util.EvalUtil import EvalUtil
@@ -120,7 +120,7 @@ class LogisticRegression:
         activation = self.compute_weight_feature_product(weights, instance)
         return 1.0 if activation >= 0.0 else 0.0
 
-    # Create features array x
+    # Create features array x and index for non-0 values
     def featuresArray(self, instance):
         temp = np.ones((len(instance.tokens)))
         features = np.array(
@@ -132,6 +132,16 @@ class LogisticRegression:
         temp = np.sort(np.asarray(instance.tokens))
         index = np.concatenate((index, temp),axis =0)
         return (features, index)
+
+    #return sparseVector
+    def featureVector(self,instance):
+        (features,index) = self.featuresArray(instance)
+        maxTokenValue = 1070659
+        offset = 5
+        x = lil_matrix((maxTokenValue+offset+1,1))
+        for i in range(features.size):
+            x[index[i]]=features[i]
+        return x
 
 
 if __name__ == '__main__':
@@ -155,3 +165,5 @@ if __name__ == '__main__':
     print(len(features),len(index))
     print(features)
     print(index)
+    x = logisticregression.featureVector(instance)
+    print(x.nonzero())
