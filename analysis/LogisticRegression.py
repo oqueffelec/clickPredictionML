@@ -52,9 +52,13 @@ class LogisticRegression:
     # ==========================
     def compute_weight_feature_product(self, weights, instance):
         # TODO: Fill in your code here
-        w = weights.tocsr()
-        x = self.featureVector(instance).tocsr()
-        return w[:,0].T.dot(x[:,0])
+        (features,index) = self.featuresArray(instance)
+        w = np.array([weights.w0,weights.w_age,weights.w_gender,weights.w_depth,weights.w_position])
+        a = w.T.dot(features[0:5])
+        print(type(a))
+        b = sum(features[5:len(index)])
+        print(type(b))
+        return a+b
 
     # ==========================
     # Apply delayed regularization to the weights corresponding to the given
@@ -75,35 +79,32 @@ class LogisticRegression:
     # @return {Weights} the final trained weights.
     # ==========================
     def train(self, dataset, lambduh, step, avg_loss):
-        #weights = Weights()
+        weights = Weights()
         maxTokenValue = 1070659
         offset = 5
-        weights = lil_matrix((maxTokenValue + offset + 1, 1),dtype='float')
-        x = lil_matrix((maxTokenValue + offset + 1, 1),dtype='float')
+        w = lil_matrix((maxTokenValue + offset + 1, 1))
+        x = lil_matrix((maxTokenValue + offset + 1, 1))
         n_epoch = 1
         for epoch in range(n_epoch):
             sum_error = 0.0
             while (dataset.hasNext()):
-                prediction = self.predict(weights, dataset)
-                #print('prediction faite, ŷ = ',prediction)
+                tp1 = time.clock()
+                prediction = self.predict(weights,dataset)
+                tp2 = time.clock()
+                print('temps predict : ',tp2-tp1)
                 instance = dataset.nextInstance()
+                t2 = time.clock()
+                (features,index) = self.featuresArray(instance)
+                tNN = time.clock()
                 error = instance.clicked - prediction
                 grad = error*step
-                t1 = time.clock()
-                x = self.featureVector(x,instance)
-                t2 = time.clock()
-                indicesNN = x.tocsr().nonzero()
-                tNN = time.clock()
-                x[indicesNN] *= grad
-                weights[indicesNN] += x[indicesNN]
+                x[index] *= grad
+                w[index] += x[index]
                 t3 = time.clock()
-                #print("temps création sparseVector x:",t2-t1)
-                #print("temps création indicesNN : ",tNN-t2)
-                #print('temps calcul w = w+x(y-ŷ)',t3-tNN)
-                print('temps total : ',t3-t1)
-                print('création indice prend',(tNN-t2)/(t3-t1)*100,'% du temps')
-                #print(weights.nonzero())
-                # sum_error += error ** 2
+                print('temps total : ',t3-tp1)
+                print('création indice prend',(tNN-t2)/(t3-tp1)*100,'% du temps')
+                sum_error += error ** 2
+                self.sparseToWeights(w,weights)
                 # weights.w0 = weights.w0 + step * error
                 # weights.w_age = weights.w_age + step * error * instance.age
                 # weights.w_gender = weights.w_gender + step * error * instance.gender
@@ -131,14 +132,15 @@ class LogisticRegression:
     # @param weights {Weights}
     # @param dataset {DataSet}
     # ==========================
-    def predict(self, weights, dataset):
-        #instance = dataset.nextInstance()
-        #activation = self.compute_weight_feature_product(weights, instance)
-        #activation = math.exp(float(activation[0,0]))
-        #activation = activation/(1+activation)
-        return 1.0 #if activation[0,0]>0.0 else 0.0
+    def predict(self,weights, dataset):
+        instance = dataset.nextInstance()
+        activation = self.compute_weight_feature_product(weights, instance)
+        print(activation)
+        activation = math.exp(activation)
+        activation = activation/(1+activation)
+        return activation
 
-    # Create features array x and index for non-0 values
+    # Create features arrayones x and index for non-0 values
     def featuresArray(self, instance):
         temp = np.ones((len(instance.tokens)))
         features = np.array(
@@ -158,6 +160,14 @@ class LogisticRegression:
             x[index[i]]=features[i]
         return x
 
+    def sparseToWeights(self,w,weights):
+        weights.w0 = w[0]
+        weights.w_age = w[1]
+        weights.w_gender = w[2]
+        weights.w_depth = w[3]
+        weights.w_position = w[4]
+        for i in range(w.getnnz()):
+            weights.w_tokens.add(i,w[i+5])
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
