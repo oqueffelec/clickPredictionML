@@ -1,9 +1,9 @@
 import math
+import time
 import numpy as np
 from scipy.sparse import lil_matrix
 
 from analysis.DataSet import DataSet
-from util.EvalUtil import EvalUtil
 
 
 # This class represents the weights in the logistic regression model.
@@ -52,8 +52,8 @@ class LogisticRegression:
     # ==========================
     def compute_weight_feature_product(self, weights, instance):
         # TODO: Fill in your code here
-        w = weights
-        x = self.featureVector(instance)
+        w = weights.tocsr()
+        x = self.featureVector(instance).tocsr()
         return w[:,0].T.dot(x[:,0])
 
     # ==========================
@@ -78,19 +78,31 @@ class LogisticRegression:
         #weights = Weights()
         maxTokenValue = 1070659
         offset = 5
-        weights = lil_matrix((maxTokenValue + offset + 1, 1))
+        weights = lil_matrix((maxTokenValue + offset + 1, 1),dtype='float')
+        x = lil_matrix((maxTokenValue + offset + 1, 1),dtype='float')
         n_epoch = 1
         for epoch in range(n_epoch):
             sum_error = 0.0
             while (dataset.hasNext()):
                 prediction = self.predict(weights, dataset)
-                print('prediction faite, ŷ = ',prediction)
+                #print('prediction faite, ŷ = ',prediction)
                 instance = dataset.nextInstance()
                 error = instance.clicked - prediction
                 grad = error*step
-                x = self.featureVector(instance)
-                x *= grad
-                weights += x
+                t1 = time.clock()
+                x = self.featureVector(x,instance)
+                t2 = time.clock()
+                indicesNN = x.tocsr().nonzero()
+                tNN = time.clock()
+                x[indicesNN] *= grad
+                weights[indicesNN] += x[indicesNN]
+                t3 = time.clock()
+                #print("temps création sparseVector x:",t2-t1)
+                #print("temps création indicesNN : ",tNN-t2)
+                #print('temps calcul w = w+x(y-ŷ)',t3-tNN)
+                print('temps total : ',t3-t1)
+                print('création indice prend',(tNN-t2)/(t3-t1)*100,'% du temps')
+                #print(weights.nonzero())
                 # sum_error += error ** 2
                 # weights.w0 = weights.w0 + step * error
                 # weights.w_age = weights.w_age + step * error * instance.age
@@ -120,11 +132,11 @@ class LogisticRegression:
     # @param dataset {DataSet}
     # ==========================
     def predict(self, weights, dataset):
-        instance = dataset.nextInstance()
-        activation = self.compute_weight_feature_product(weights, instance)
-        activation = math.exp(float(activation[0,0]))
-        activation = activation/(1+activation)
-        return 1.0 if activation >= 0.0 else 0.0
+        #instance = dataset.nextInstance()
+        #activation = self.compute_weight_feature_product(weights, instance)
+        #activation = math.exp(float(activation[0,0]))
+        #activation = activation/(1+activation)
+        return 1.0 #if activation[0,0]>0.0 else 0.0
 
     # Create features array x and index for non-0 values
     def featuresArray(self, instance):
@@ -140,11 +152,8 @@ class LogisticRegression:
         return (features, index)
 
     #return sparseVector
-    def featureVector(self,instance):
+    def featureVector(self,x,instance):
         (features,index) = self.featuresArray(instance)
-        maxTokenValue = 1070659
-        offset = 5
-        x = lil_matrix((maxTokenValue+offset+1,1))
         for i in range(features.size):
             x[index[i]]=features[i]
         return x
