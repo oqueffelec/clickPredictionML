@@ -84,6 +84,7 @@ class LogisticRegression:
             sum_error = 0.0
             while (dataset.hasNext()):
                 prediction = self.predict(weights, dataset)
+                print('prediction faite, ŷ = ',prediction)
                 instance = dataset.nextInstance()
                 error = instance.clicked - prediction
                 grad = error*step
