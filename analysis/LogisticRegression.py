@@ -96,10 +96,7 @@ class LogisticRegression:
                 x[index] *= grad
                 w[index] += x[index]
                 sum_error += error ** 2
-                tic = time.clock()
-                self.sparseToWeights(w,weights)
-                toc = time.clock()
-                print('sparseToWeights en ',toc-tic)
+                self.sparseToWeights(w,weights,index)
         dataset.reset()
         print("train DONE")
         return weights
@@ -147,19 +144,21 @@ class LogisticRegression:
             x[index[i]]=features[i]
         return x
 
-    def sparseToWeights(self,w,weights):
+    def sparseToWeights(self,w,weights,index):
         weights.w0 = w[0,0]
         weights.w_age = w[1,0]
         weights.w_gender = w[2,0]
         weights.w_depth = w[3,0]
         weights.w_position = w[4,0]
-        for i in(w.tocsc().indices):
-            weights.w_tokens.add(i,w[i+5])
+        for i in(index[5::]):
+            weights.w_tokens[i] = w[i]
+        #for i in(w.tocsc().indices):
+            #weights.w_tokens.add(i,w[i+5])
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
     fname = "/home/rasendrasoa/workspace/data/train.txt"
-    TRAININGSIZE = 20
+    TRAININGSIZE = 300
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
     t1 = time.clock()
