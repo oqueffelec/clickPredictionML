@@ -55,9 +55,7 @@ class LogisticRegression:
         (features,index) = self.featuresArray(instance)
         w = np.array([weights.w0,weights.w_age,weights.w_gender,weights.w_depth,weights.w_position])
         a = w.T.dot(features[0:5])
-        print(type(a))
         b = sum(features[5:len(index)])
-        print(type(b))
         return a+b
 
     # ==========================
@@ -88,30 +86,20 @@ class LogisticRegression:
         for epoch in range(n_epoch):
             sum_error = 0.0
             while (dataset.hasNext()):
-                tp1 = time.clock()
                 prediction = self.predict(weights,dataset)
-                tp2 = time.clock()
-                print('temps predict : ',tp2-tp1)
+                if (1-prediction>=0.1):
+                    print(prediction)
                 instance = dataset.nextInstance()
-                t2 = time.clock()
                 (features,index) = self.featuresArray(instance)
-                tNN = time.clock()
                 error = instance.clicked - prediction
                 grad = error*step
                 x[index] *= grad
                 w[index] += x[index]
-                t3 = time.clock()
-                print('temps total : ',t3-tp1)
-                print('création indice prend',(tNN-t2)/(t3-tp1)*100,'% du temps')
                 sum_error += error ** 2
+                tic = time.clock()
                 self.sparseToWeights(w,weights)
-                # weights.w0 = weights.w0 + step * error
-                # weights.w_age = weights.w_age + step * error * instance.age
-                # weights.w_gender = weights.w_gender + step * error * instance.gender
-                # weights.w_depth = weights.w_depth + step * error * instance.depth
-                # weights.w_position = weights.w_position + step * error * instance.position
-                # for key, value in weights.w_tokens.items():
-                #     weights.w_tokens[key] = value + step * error * instance.tokens[key]
+                toc = time.clock()
+                print('sparseToWeights en ',toc-tic)
         dataset.reset()
         print("train DONE")
         return weights
@@ -135,7 +123,6 @@ class LogisticRegression:
     def predict(self,weights, dataset):
         instance = dataset.nextInstance()
         activation = self.compute_weight_feature_product(weights, instance)
-        print(activation)
         activation = math.exp(activation)
         activation = activation/(1+activation)
         return activation
@@ -149,7 +136,7 @@ class LogisticRegression:
         index = np.array([0, 1, 2, 3, 4])
         for i in range(len(instance.tokens)):
             instance.tokens[i] += 5
-        temp = np.sort(np.asarray(instance.tokens))
+        temp = np.asarray(instance.tokens)
         index = np.concatenate((index, temp),axis =0)
         return (features, index)
 
@@ -161,34 +148,25 @@ class LogisticRegression:
         return x
 
     def sparseToWeights(self,w,weights):
-        weights.w0 = w[0]
-        weights.w_age = w[1]
-        weights.w_gender = w[2]
-        weights.w_depth = w[3]
-        weights.w_position = w[4]
-        for i in range(w.getnnz()):
+        weights.w0 = w[0,0]
+        weights.w_age = w[1,0]
+        weights.w_gender = w[2,0]
+        weights.w_depth = w[3,0]
+        weights.w_position = w[4,0]
+        for i in(w.tocsc().indices):
             weights.w_tokens.add(i,w[i+5])
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
     fname = "/home/rasendrasoa/workspace/data/train.txt"
-    TRAININGSIZE = 90000
+    TRAININGSIZE = 20
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
+    t1 = time.clock()
     poids = logisticregression.train(training, 0, 0.1, 0)
-    print(poids.nonzero())
+    t2 = time.clock()
+    print('training done in ',t2-t1)
     fname = "/home/rasendrasoa/workspace/data/test.txt"
     TESTINGSIZE = 500
     testing = DataSet(fname, False, TESTINGSIZE)
     res = np.empty(TESTINGSIZE)
-    # for k, v in poids.w_tokens.items():
-    #     print(k, v)
-    # print(len(poids.w_tokens))
-    # instance = training.nextInstance()
-    # print(len(training.nextInstance().tokens))
-    # (features,index) = logisticregression.featuresArray(training.nextInstance())
-    # print(len(features),len(index))
-    # print(features)
-    # print(index)
-    # x = logisticregression.featureVector(instance)
-    # print(x.tocsc())
