@@ -158,13 +158,13 @@ class LogisticRegression:
 if __name__ == '__main__':
     # TODO: Fill in your code here
     fname = "/home/rasendrasoa/workspace/data/train.txt"
-    TRAININGSIZE = 300
+    TRAININGSIZE = 10000
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
     t1 = time.clock()
     poids = logisticregression.train(training, 0, 0.1, 0)
     t2 = time.clock()
-    print('training done in ',t2-t1)
+    print('train fait en',t2-t1,'s pour',TRAININGSIZE,'valeurs')
     fname = "/home/rasendrasoa/workspace/data/test.txt"
     TESTINGSIZE = 500
     testing = DataSet(fname, False, TESTINGSIZE)
