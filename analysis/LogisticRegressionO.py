@@ -85,14 +85,11 @@ class LogisticRegression:
         offset = 5
         weights= Weights()
         n_epoch = 1
-        compteur=0
-        totalclick=0
         for epoch in range(n_epoch):
             while (dataset.hasNext()):
                 instance = dataset.nextInstance()
                 prediction = self.predict(weights, instance)
-                if(prediction>0.5):compteur=compteur+1
-                if(instance.clicked==1):totalclick=totalclick+1
+                print("prediction=", prediction)
                 error =  instance.clicked - prediction
                 weights.w0 = weights.w0 + step * error
                 weights.w_age = weights.w_age + step * error * instance.age
@@ -103,8 +100,6 @@ class LogisticRegression:
                     weights.w_tokens[indice]=weights.w_tokens[indice]+step*error
 
         print("train DONE")
-        print("compteur",compteur)
-        print("totalclick",totalclick)
         return weights
 
 
