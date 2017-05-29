@@ -88,9 +88,11 @@ class LogisticRegression:
         weights= Weights()
         n_epoch = 1
         for epoch in range(n_epoch):
-            for i in range(dataset.size):
-                ind = random.randint(1,dataset.size)
-                instance = dataset.nextIemeInstance(ind)
+            #for i in range(dataset.size):
+                #ind = random.randint(1,dataset.size)
+                #instance = dataset.nextIemeInstance(ind)
+            while (dataset.hasNext()):
+                instance = dataset.nextInstance()
                 prediction = self.predict(weights, instance)
                 error =  instance.clicked - prediction
                 weights.w0 = weights.w0 + step * error
