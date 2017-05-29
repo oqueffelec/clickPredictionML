@@ -4,6 +4,7 @@ import numpy as np
 import csv
 import time
 import random
+import matplotlib.pyplot as plt
 
 
 from analysis.DataSet import DataSet
@@ -84,26 +85,40 @@ class LogisticRegression:
     def train(self, dataset, lambduh, step, avg_loss):
         #weights = Weights()
         maxTokenValue = 1070659
+        N = dataset.size
         offset = 5
         weights= Weights()
         n_epoch = 1
+        count = 0
+        n = 100
+        T = np.linspace(0,N,N/n)
         for epoch in range(n_epoch):
-            #for i in range(dataset.size):
-                #ind = random.randint(1,dataset.size)
-                #instance = dataset.nextIemeInstance(ind)
+            # for i in range(dataset.size):
+            #     ind = random.randrange(1,dataset.size+1)
+            #     instance = dataset.nextIemeInstance(ind)
             while (dataset.hasNext()):
                 instance = dataset.nextInstance()
                 prediction = self.predict(weights, instance)
                 error =  instance.clicked - prediction
-                weights.w0 = weights.w0 + step * error
-                weights.w_age = weights.w_age + step * error * instance.age
-                weights.w_gender = weights.w_gender + step * error * instance.gender
-                weights.w_depth = weights.w_depth + step * error * instance.depth
-                weights.w_position = weights.w_position + step * error * instance.position
-                for indice in instance.tokens:
-                    weights.w_tokens[indice]=weights.w_tokens[indice]+step*error
+                avg_loss[0] = (1/2)*(error*error)
+                j = count % n
+                if (j==0 and count/n != 0):
+                    avg_loss[int(count/n)] = (1/(2*count))*(error*error)+avg_loss[int(count/n)-1]
+                count += 1
+                if (instance.clicked*prediction<=0):
+                    weights.w0 = (1-step*lambduh/N)*weights.w0 + step * error
+                    weights.w_age = (1-step*lambduh/N)*weights.w_age + step * error * instance.age
+                    weights.w_gender = (1-step*lambduh/N)*weights.w_gender + step * error * instance.gender
+                    weights.w_depth = (1-step*lambduh/N)*weights.w_depth + step * error * instance.depth
+                    weights.w_position = (1-step*lambduh/N)*weights.w_position + step * error * instance.position
+                    for indice in instance.tokens:
+                        weights.w_tokens[indice]= (1-step*lambduh/N)*weights.w_tokens[indice]+step*error
 
         print("train DONE")
+        plt.plot(T,avg_loss)
+        plt.ylabel('average loss')
+        plt.xlabel("step = 100")
+        plt.show()
         return weights
 
 
@@ -124,8 +139,10 @@ class LogisticRegression:
     # ==========================
     def predict(self, weights, instance):
         product = self.compute_weight_feature_product(weights, instance)
-        activation = (math.exp(float(product)))/(1+(math.exp(float(product))))
-        return activation
+        if(product>0):
+            return 1
+        else:
+            return 0
 
     def predictTest(self, weights, instance):
         teta=0
@@ -154,8 +171,9 @@ if __name__ == '__main__':
     TRAININGSIZE = 5000
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
+    avg_loss = np.zeros((int(TRAININGSIZE/100),1))
     t1 = time.clock()
-    poids = logisticregression.train(training, 0.0, 0.1, 0.0)
+    poids = logisticregression.train(training, 0.001, 0.1, avg_loss)
     t2 = time.clock()
     print("train réalisé pour",TRAININGSIZE,"valeurs en",t2-t1,"s \n")
     print(poids)
@@ -167,6 +185,7 @@ if __name__ == '__main__':
         instance = testing.nextInstance()
         res[i]=logisticregression.predictTest(poids,instance)
     tabTest = np.where(res>0)
+    print(np.size(tabTest))
     fname = "/home/rasendrasoa/workspace/data/test_label.txt"
     tabLabel = logisticregression.test_labelTomatrix(fname)
     print(np.size(tabLabel))
@@ -175,4 +194,4 @@ if __name__ == '__main__':
         reussite = np.size(tabEltCommun)/np.size(tabLabel)
         print(tabEltCommun,"taux de réussite =",reussite*100,"%")
     else:
-        print("aucun élément différent de 0")
+        print("aucun élément trouvé")
