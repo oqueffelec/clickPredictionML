@@ -55,7 +55,6 @@ class LogisticRegression:
         # TODO: Fill in your code here
         w = [float(weights.w0), float(weights.w_age), float(weights.w_gender), float(weights.w_depth), float(weights.w_position)]
         x = [1.0, float(instance.age), float(instance.gender), float(instance.depth), float(instance.position)]
-        # x=self.normalize(x)
         temp=0
         for i in instance.tokens:
             temp+=weights.w_tokens[i]
@@ -130,33 +129,6 @@ class LogisticRegression:
         if (product>teta):
             return 1
         return 0
-
-    # Create features array x and index for non-0 values
-    def featuresArray(self, instance):
-        temp = np.ones((len(instance.tokens)))
-        features = np.array(
-            [1.0, float(instance.age), float(instance.gender), float(instance.depth), float(instance.position)])
-        features = np.concatenate((features, temp), axis=0)
-        index = np.array([0, 1, 2, 3, 4])
-        for i in range(len(instance.tokens)):
-            instance.tokens[i] += 5
-        temp = np.sort(np.asarray(instance.tokens))
-        index = np.concatenate((index, temp),axis =0)
-        return (features, index)
-
-    #return sparseVector
-    def featureVector(self,instance):
-        (features,index) = self.featuresArray(instance)
-        maxTokenValue = 1070659
-        offset = 5
-        x = lil_matrix((maxTokenValue+offset+1,1))
-        for i in range(features.size):
-            x[index[i]]=features[i]
-        return x
-
-    def normalize(self,vector):
-        norm=np.linalg.norm(vector)
-        return vector/norm
 
 
 if __name__ == '__main__':
