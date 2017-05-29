@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import math
 import numpy as np
-from scipy.sparse import lil_matrix
+import csv
+import time
+import random
+
 
 from analysis.DataSet import DataSet
 from util.EvalUtil import EvalUtil
@@ -58,8 +61,7 @@ class LogisticRegression:
         temp=0
         for i in instance.tokens:
             temp+=weights.w_tokens[i]
-        print(np.inner(w,x))+temp
-        return np.inner(w,x)   + temp
+        return float(np.inner(w,x)) + temp
 
     # ==========================
     # Apply delayed regularization to the weights corresponding to the given
@@ -86,10 +88,10 @@ class LogisticRegression:
         weights= Weights()
         n_epoch = 1
         for epoch in range(n_epoch):
-            while (dataset.hasNext()):
-                instance = dataset.nextInstance()
+            for i in range(dataset.size):
+                ind = random.randint(1,dataset.size)
+                instance = dataset.nextIemeInstance(ind)
                 prediction = self.predict(weights, instance)
-                print("prediction=", prediction)
                 error =  instance.clicked - prediction
                 weights.w0 = weights.w0 + step * error
                 weights.w_age = weights.w_age + step * error * instance.age
@@ -130,22 +132,45 @@ class LogisticRegression:
             return 1
         return 0
 
+    def test_labelTomatrix(self, fname):
+        f = open(fname,"r")
+        listeLabel = []
+        count = 0
+        reader = csv.reader(f)
+        for row in reader:
+            count+=1
+            if(row[0]!='0'):
+                temp = count
+                listeLabel.append(temp)
+        x = np.asarray(listeLabel)
+        return x
+
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
-    TRAININGSIZE = 9000
+    fname = "/home/rasendrasoa/workspace/data/train.txt"
+    TRAININGSIZE = 5000
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
-    poids = logisticregression.train(training, 0, 0.1, 0)
+    t1 = time.clock()
+    poids = logisticregression.train(training, 0.0, 0.1, 0.0)
+    t2 = time.clock()
+    print("train réalisé pour",TRAININGSIZE,"valeurs en",t2-t1,"s \n")
     print(poids)
-    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+    fname = "/home/rasendrasoa/workspace/data/test.txt"
     TESTINGSIZE = 5000
     testing = DataSet(fname, False, TESTINGSIZE)
     res = np.empty(TESTINGSIZE)
     for i in range(TESTINGSIZE):
         instance = testing.nextInstance()
         res[i]=logisticregression.predictTest(poids,instance)
-    print(np.where(res>0))
-    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
-    testinglabel = DataSet(fname, True, TESTINGSIZE)
+    tabTest = np.where(res>0)
+    fname = "/home/rasendrasoa/workspace/data/test_label.txt"
+    tabLabel = logisticregression.test_labelTomatrix(fname)
+    print(np.size(tabLabel))
+    tabEltCommun = np.intersect1d(tabTest,tabLabel)
+    if(np.size(tabTest)!=0):
+        reussite = np.size(tabEltCommun)/np.size(tabLabel)
+        print(tabEltCommun,"taux de réussite =",reussite*100,"%")
+    else:
+        print("aucun élément différent de 0")
