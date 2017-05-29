@@ -59,6 +59,7 @@ class LogisticRegression:
         temp=0
         for i in instance.tokens:
             temp+=weights.w_tokens[i]
+        print(np.inner(w,x))+temp
         return np.inner(w,x)   + temp
 
     # ==========================
@@ -120,9 +121,15 @@ class LogisticRegression:
     # ==========================
     def predict(self, weights, instance):
         product = self.compute_weight_feature_product(weights, instance)
-        if(product>700):product=700
         activation = (math.exp(float(product)))/(1+(math.exp(float(product))))
         return activation
+
+    def predictTest(self, weights, instance):
+        teta=0
+        product = self.compute_weight_feature_product(weights, instance)
+        if (product>teta):
+            return 1
+        return 0
 
     # Create features array x and index for non-0 values
     def featuresArray(self, instance):
@@ -155,23 +162,18 @@ class LogisticRegression:
 if __name__ == '__main__':
     # TODO: Fill in your code here
     fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
-    TRAININGSIZE = 90000
+    TRAININGSIZE = 9000
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
     poids = logisticregression.train(training, 0, 0.1, 0)
     print(poids)
-    # fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
-    # TESTINGSIZE = 500
-    # testing = DataSet(fname, False, TESTINGSIZE)
-    # res = np.empty(TESTINGSIZE)
-    # for k, v in poids.w_tokens.items():
-    #     print(k, v)
-    # print(len(poids.w_tokens))
-    # instance = training.nextInstance()
-    # print(len(training.nextInstance().tokens))
-    # (features,index) = logisticregression.featuresArray(training.nextInstance())
-    # print(len(features),len(index))
-    # print(features)
-    # print(index)
-    # x = logisticregression.featureVector(instance)
-    # print(x.tocsc())
+    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+    TESTINGSIZE = 5000
+    testing = DataSet(fname, False, TESTINGSIZE)
+    res = np.empty(TESTINGSIZE)
+    for i in range(TESTINGSIZE):
+        instance = testing.nextInstance()
+        res[i]=logisticregression.predictTest(poids,instance)
+    print(np.where(res>0))
+    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
+    testinglabel = DataSet(fname, True, TESTINGSIZE)
