@@ -86,12 +86,19 @@ class LogisticRegression:
         #weights = Weights()
         maxTokenValue = 1070659
         N = dataset.size
-        offset = 5
+        # offset = 5
         weights= Weights()
         n_epoch = 1
-        count = 0
-        n = 100
-        T = np.linspace(0,N,N/n)
+        N00=0
+        N01=0
+        N10=0
+        N11=0
+        erreurNUL=0
+        erreurNONNUL=0
+        erreurSUM=0
+        # count = 0
+        # n = 100
+        # T = np.linspace(0,N,N/n)
         for epoch in range(n_epoch):
             # for i in range(dataset.size):
             #     ind = random.randrange(1,dataset.size+1)
@@ -100,27 +107,37 @@ class LogisticRegression:
                 instance = dataset.nextInstance()
                 prediction = self.predict(weights, instance)
                 error =  instance.clicked - prediction
-                avg_loss[0] = (1/2)*(error*error)
-                j = count % n
-                if (j==0 and count/n != 0):
-                    avg_loss[int(count/n)] = (1/(2*count))*(error*error)+avg_loss[int(count/n)-1]
-                count += 1
-                if (instance.clicked*prediction<=0):
-                    weights.w0 = (1-step*lambduh/N)*weights.w0 + step * error
-                    weights.w_age = (1-step*lambduh/N)*weights.w_age + step * error * instance.age
-                    weights.w_gender = (1-step*lambduh/N)*weights.w_gender + step * error * instance.gender
-                    weights.w_depth = (1-step*lambduh/N)*weights.w_depth + step * error * instance.depth
-                    weights.w_position = (1-step*lambduh/N)*weights.w_position + step * error * instance.position
-                    for indice in instance.tokens:
-                        weights.w_tokens[indice]= (1-step*lambduh/N)*weights.w_tokens[indice]+step*error
+                if(error==0):
+                    if(prediction==0):
+                        N00+=1
+                    else:
+                        N11+=1
+                else:
+                    if(prediction==0):
+                        N10+=1
+                    else:
+                        N01+=1
+                # avg_loss[0] = (1/2)*(error*error)
+                # j = count % n
+                # if (j==0 and count/n != 0):
+                #     avg_loss[int(count/n)] = (1/(2*count))*(error*error)+avg_loss[int(count/n)-1]
+                # count += 1
+                # if (error!=0):
+                weights.w0 = (1-step*lambduh/N)*weights.w0 + step * error
+                weights.w_age = (1-step*lambduh/N)*weights.w_age + step * error * instance.age
+                weights.w_gender = (1-step*lambduh/N)*weights.w_gender + step * error * instance.gender
+                weights.w_depth = (1-step*lambduh/N)*weights.w_depth + step * error * instance.depth
+                weights.w_position = (1-step*lambduh/N)*weights.w_position + step * error * instance.position
+                for indice in instance.tokens:
+                    weights.w_tokens[indice]= (1-step*lambduh/N)*weights.w_tokens[indice]+step*error
 
         print("train DONE")
-        plt.figure(1)
-        plt.plot(T,avg_loss)
-        plt.ylabel('average loss')
-        plt.xlabel("step = 100")
-        plt.show()
-        return weights
+        # plt.figure(1)
+        # plt.plot(T,avg_loss)
+        # plt.ylabel('average loss')
+        # plt.xlabel("step = 100")
+        # plt.show()
+        return weights,N00,N10,N01,N11
 
 
         # TODO: Fill in your code here. The structure should look like:
@@ -187,18 +204,23 @@ class LogisticRegression:
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    fname = "/home/rasendrasoa/workspace/data/train.txt"
-    TRAININGSIZE = 200
+    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
+    TRAININGSIZE = 50000
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
     avg_loss = np.zeros((int(TRAININGSIZE/100),1))
-    t1 = time.clock()
-    poids = logisticregression.train(training, 0.001, 0.1, avg_loss)
-    t2 = time.clock()
-    print("train réalisé pour",TRAININGSIZE,"valeurs en",t2-t1,"s \n")
+    # t1 = time.clock()
+    poids,N00,N10,N01,N11 = logisticregression.train(training, 0.001, 0.1, avg_loss)
+    # t2 = time.clock()
+    # print("train réalisé pour",TRAININGSIZE,"valeurs en",t2-t1,"s \n")
     print(poids)
-    fname = "/home/rasendrasoa/workspace/data/test.txt"
-    TESTINGSIZE = 200
+    print("N00\n",N00)
+    print("N01\n",N01)
+    print("N10\n",N10)
+    print("N11\n",N11)
+    print("Ratio de reussite\n",(N00+N11)/float(N00+N01+N10+N11))
+    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+    TESTINGSIZE = 5000
     testing = DataSet(fname, False, TESTINGSIZE)
     res = np.empty(TESTINGSIZE)
     for i in range(TESTINGSIZE):
@@ -206,9 +228,9 @@ if __name__ == '__main__':
         res[i]=logisticregression.predictTest(poids,instance)
     tabTest = np.where(res>0)
     print(np.size(tabTest))
-    fname = "/home/rasendrasoa/workspace/data/test_label.txt"
-    tabLabel = logisticregression.test_labelTomatrix(fname)
-    print(np.size(tabLabel))
-    tabEltCommun = np.intersect1d(tabTest,tabLabel)
-    print('elaboration matrice confusion en cours')
+    # fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
+    # tabLabel = logisticregression.test_labelTomatrix(fname)
+    # print(np.size(tabLabel))
+    # tabEltCommun = np.intersect1d(tabTest,tabLabel)
+    # print('elaboration matrice confusion en cours')
     #logisticregression.monroc(res,tabLabel)
