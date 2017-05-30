@@ -115,6 +115,7 @@ class LogisticRegression:
                         weights.w_tokens[indice]= (1-step*lambduh/N)*weights.w_tokens[indice]+step*error
 
         print("train DONE")
+        plt.figure(1)
         plt.plot(T,avg_loss)
         plt.ylabel('average loss')
         plt.xlabel("step = 100")
@@ -164,11 +165,30 @@ class LogisticRegression:
         x = np.asarray(listeLabel)
         return x
 
+    def monroc(self, fx, labels):
+        seuils = np.linspace(fx.min(0),fx.max(0)+0.01,(fx.max(0)-fx.min(0))/0.01)
+        TPR = np.zeros((len(seuils),1))
+        FPR = np.zeros((len(seuils),1))
+        for i in range(len(seuils)):
+            b_pred = fx >= seuils[i]
+            TP = sum(b_pred == 1 & labels == 1)
+            FP = sum(b_pred == 1 & labels == -1)
+            TN = sum(b_pred == 0 & labels == -1)
+            FN = sum(b_pred == 0 & labels == 1)
+            TPR[i] = TP/(TP+FN)
+            FPR[i] = FP/(TN+FP)
+        # plt.figure(2)
+        # plt.plot(FPR[::-1,:],TPR[::-1,:],'b')
+        # plt.xlabel('Taux de faux positifs FPR')
+        # plt.ylabel('Taux de vrais positifs FPR')
+        # plt.show()
+        return 0
+
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
     fname = "/home/rasendrasoa/workspace/data/train.txt"
-    TRAININGSIZE = 5000
+    TRAININGSIZE = 200
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
     avg_loss = np.zeros((int(TRAININGSIZE/100),1))
@@ -178,7 +198,7 @@ if __name__ == '__main__':
     print("train réalisé pour",TRAININGSIZE,"valeurs en",t2-t1,"s \n")
     print(poids)
     fname = "/home/rasendrasoa/workspace/data/test.txt"
-    TESTINGSIZE = 5000
+    TESTINGSIZE = 200
     testing = DataSet(fname, False, TESTINGSIZE)
     res = np.empty(TESTINGSIZE)
     for i in range(TESTINGSIZE):
@@ -190,8 +210,5 @@ if __name__ == '__main__':
     tabLabel = logisticregression.test_labelTomatrix(fname)
     print(np.size(tabLabel))
     tabEltCommun = np.intersect1d(tabTest,tabLabel)
-    if(np.size(tabTest)!=0):
-        reussite = np.size(tabEltCommun)/np.size(tabLabel)
-        print(tabEltCommun,"taux de réussite =",reussite*100,"%")
-    else:
-        print("aucun élément trouvé")
+    print('elaboration matrice confusion en cours')
+    #logisticregression.monroc(res,tabLabel)
