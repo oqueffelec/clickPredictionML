@@ -93,9 +93,6 @@ class LogisticRegression:
         N01=0
         N10=0
         N11=0
-        erreurNUL=0
-        erreurNONNUL=0
-        erreurSUM=0
         # count = 0
         # n = 100
         # T = np.linspace(0,N,N/n)
@@ -140,6 +137,8 @@ class LogisticRegression:
         return weights,N00,N10,N01,N11
 
 
+
+
         # TODO: Fill in your code here. The structure should look like:
         # For each data point:
         # Your code: perform delayed regularization
@@ -162,12 +161,6 @@ class LogisticRegression:
         else:
             return 0
 
-    def predictTest(self, weights, instance):
-        teta=0
-        product = self.compute_weight_feature_product(weights, instance)
-        if (product>teta):
-            return 1
-        return 0
 
     def test_labelTomatrix(self, fname):
         f = open(fname,"r")
@@ -201,6 +194,27 @@ class LogisticRegression:
         # plt.show()
         return 0
 
+    def test(self,dataset,tabLabel,TESTINGSIZE):
+        M00=0
+        M01=0
+        M10=0
+        M11=0
+        prediction = np.empty(TESTINGSIZE)
+        for i in range(TESTINGSIZE):
+            instance = dataset.nextInstance()
+            prediction[i]=self.predict(poids,instance)
+            if(i in tabLabel):
+                if(prediction[i]==1):
+                    M11+=1
+                else:
+                    M10+=1
+            else:
+                if(prediction[i]==0):
+                    M00+=1
+                else:
+                    M01+=1
+        return M00,M10,M01,M11
+
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
@@ -209,28 +223,22 @@ if __name__ == '__main__':
     training = DataSet(fname, True, TRAININGSIZE)
     logisticregression = LogisticRegression()
     avg_loss = np.zeros((int(TRAININGSIZE/100),1))
-    # t1 = time.clock()
     poids,N00,N10,N01,N11 = logisticregression.train(training, 0.001, 0.1, avg_loss)
-    # t2 = time.clock()
-    # print("train réalisé pour",TRAININGSIZE,"valeurs en",t2-t1,"s \n")
     print(poids)
-    print("N00\n",N00)
-    print("N01\n",N01)
-    print("N10\n",N10)
-    print("N11\n",N11)
-    print("Ratio de reussite\n",(N00+N11)/float(N00+N01+N10+N11))
+    print("N00",N00)
+    print("N01",N01)
+    print("N10",N10)
+    print("N11",N11)
+    print("Ratio de reussite pour le training",(N00+N11)/float(N00+N01+N10+N11))
+    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
+    TESTINGSIZE = 50000
+    label= DataSet(fname, True, TESTINGSIZE)
+    tabLabel = logisticregression.test_labelTomatrix(fname)
     fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
-    TESTINGSIZE = 5000
     testing = DataSet(fname, False, TESTINGSIZE)
-    res = np.empty(TESTINGSIZE)
-    for i in range(TESTINGSIZE):
-        instance = testing.nextInstance()
-        res[i]=logisticregression.predictTest(poids,instance)
-    tabTest = np.where(res>0)
-    print(np.size(tabTest))
-    # fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
-    # tabLabel = logisticregression.test_labelTomatrix(fname)
-    # print(np.size(tabLabel))
-    # tabEltCommun = np.intersect1d(tabTest,tabLabel)
-    # print('elaboration matrice confusion en cours')
-    #logisticregression.monroc(res,tabLabel)
+    M00,M10,M01,M11 = logisticregression.test(testing, tabLabel,TESTINGSIZE)
+    print("M00",M00)
+    print("M01",M01)
+    print("M10",M10)
+    print("M11",M11)
+    print("Ratio de reussite pour le testing",(M00+M11)/float(M00+M01+M10+M11))
