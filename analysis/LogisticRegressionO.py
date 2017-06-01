@@ -2,8 +2,6 @@
 import math
 import numpy as np
 import csv
-import time
-import random
 import matplotlib.pyplot as plt
 
 
@@ -60,6 +58,8 @@ class LogisticRegression:
         w = [float(weights.w0), float(weights.w_age), float(weights.w_gender), float(weights.w_depth), float(weights.w_position)]
         x = [1.0, float(instance.age), float(instance.gender), float(instance.depth), float(instance.position)]
         temp=0
+        # il est indiqué dans l'énoncé que l'on peut considérer
+        # la liste des tokens comme étant un vecteur creux b tel que b[i] = 1
         for i in instance.tokens:
             temp+=weights.w_tokens[i]
         return float(np.inner(w,x)) + temp
@@ -83,23 +83,19 @@ class LogisticRegression:
     # @return {Weights} the final trained weights.
     # ==========================
     def train(self, dataset, lambduh, step, avg_loss):
-        #weights = Weights()
-        maxTokenValue = 1070659
+
         N = dataset.size
-        # offset = 5
         weights= Weights()
         n_epoch = 1
         N00=0
         N01=0
         N10=0
         N11=0
-        # count = 0
-        # n = 100
-        # T = np.linspace(0,N,N/n)
+        count = 0
+        nbStep = 100
+        T = np.linspace(0,N,N/nbStep)
+
         for epoch in range(n_epoch):
-            # for i in range(dataset.size):
-            #     ind = random.randrange(1,dataset.size+1)
-            #     instance = dataset.nextIemeInstance(ind)
             while (dataset.hasNext()):
                 instance = dataset.nextInstance()
                 prediction = self.predict(weights, instance)
@@ -114,11 +110,6 @@ class LogisticRegression:
                         N10+=1
                     else:
                         N01+=1
-                # avg_loss[0] = (1/2)*(error*error)
-                # j = count % n
-                # if (j==0 and count/n != 0):
-                #     avg_loss[int(count/n)] = (1/(2*count))*(error*error)+avg_loss[int(count/n)-1]
-                # count += 1
                 # if (error!=0):
                 weights.w0 = (1-step*lambduh/N)*weights.w0 + step * error
                 weights.w_age = (1-step*lambduh/N)*weights.w_age + step * error * instance.age
@@ -127,27 +118,15 @@ class LogisticRegression:
                 weights.w_position = (1-step*lambduh/N)*weights.w_position + step * error * instance.position
                 for indice in instance.tokens:
                     weights.w_tokens[indice]= (1-step*lambduh/N)*weights.w_tokens[indice]+step*error
+                # record the average loss for each step 100
+                avg_loss[0] = (1 / 2) * (error * error)
+                j = count % nbStep
+                if (j == 0 and count / nbStep != 0):
+                    avg_loss[int(count / nbStep)] = (1 / (2 * count)) * (error * error) + avg_loss[int(count / nbStep) - 1]
+                count += 1
 
         print("train DONE")
-        # plt.figure(1)
-        # plt.plot(T,avg_loss)
-        # plt.ylabel('average loss')
-        # plt.xlabel("step = 100")
-        # plt.show()
-        return weights,N00,N10,N01,N11
-
-
-
-
-        # TODO: Fill in your code here. The structure should look like:
-        # For each data point:
-        # Your code: perform delayed regularization
-
-        # Your code: predict the label, record the loss
-
-        # Your code: compute w0 + <w, x>, and gradient
-
-        # Your code: update weights along the negative gradient
+        return weights,N00,N10,N01,N11,T,avg_loss
 
     # ==========================
     # Use the weights to predict the CTR for a dataset.
@@ -161,7 +140,8 @@ class LogisticRegression:
         else:
             return 0
 
-
+    # return a vector from values in file test_label.txt
+    # @param fname {String}
     def test_labelTomatrix(self, fname):
         f = open(fname,"r")
         listeLabel = []
@@ -175,25 +155,10 @@ class LogisticRegression:
         x = np.asarray(listeLabel)
         return x
 
-    def monroc(self, fx, labels):
-        seuils = np.linspace(fx.min(0),fx.max(0)+0.01,(fx.max(0)-fx.min(0))/0.01)
-        TPR = np.zeros((len(seuils),1))
-        FPR = np.zeros((len(seuils),1))
-        for i in range(len(seuils)):
-            b_pred = fx >= seuils[i]
-            TP = sum(b_pred == 1 & labels == 1)
-            FP = sum(b_pred == 1 & labels == -1)
-            TN = sum(b_pred == 0 & labels == -1)
-            FN = sum(b_pred == 0 & labels == 1)
-            TPR[i] = TP/(TP+FN)
-            FPR[i] = FP/(TN+FP)
-        # plt.figure(2)
-        # plt.plot(FPR[::-1,:],TPR[::-1,:],'b')
-        # plt.xlabel('Taux de faux positifs FPR')
-        # plt.ylabel('Taux de vrais positifs FPR')
-        # plt.show()
-        return 0
-
+    # calcule la matrice de confusion
+    # @param dataset {DataSet}
+    # @param tabLabel {array[TESTINGSIZE]}
+    # @param TESTINGSIZE {Int}
     def test(self,dataset,tabLabel,TESTINGSIZE):
         M00=0
         M01=0
@@ -218,27 +183,36 @@ class LogisticRegression:
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
     TRAININGSIZE = 50000
-    training = DataSet(fname, True, TRAININGSIZE)
-    logisticregression = LogisticRegression()
-    avg_loss = np.zeros((int(TRAININGSIZE/100),1))
-    poids,N00,N10,N01,N11 = logisticregression.train(training, 0.001, 0.1, avg_loss)
-    print(poids)
-    print("N00",N00)
-    print("N01",N01)
-    print("N10",N10)
-    print("N11",N11)
-    print("Ratio de reussite pour le training",(N00+N11)/float(N00+N01+N10+N11))
-    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
     TESTINGSIZE = 50000
-    label= DataSet(fname, True, TESTINGSIZE)
-    tabLabel = logisticregression.test_labelTomatrix(fname)
-    fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
-    testing = DataSet(fname, False, TESTINGSIZE)
+
+    avg_loss = np.zeros((int(TRAININGSIZE/100),1))
+    T = []
+
+    train = "/home/rasendrasoa/workspace/data/train.txt"
+    test_label = "/home/rasendrasoa/workspace/data/test_label.txt"
+    test = "/home/rasendrasoa/workspace/data/test.txt"
+
+    training = DataSet(train, True, TRAININGSIZE)
+    logisticregression = LogisticRegression()
+    poids,N00,N10,N01,N11,T,avg_loss = logisticregression.train(training, 0.001, 0.1, avg_loss)
+
+    print(poids)
+    print("N00",N00,"N10",N10)
+    print("N01",N01,"N11",N11)
+    print("Ratio de reussite pour le training",(N00+N11)/float(N00+N01+N10+N11))
+
+    tabLabel = logisticregression.test_labelTomatrix(test_label)
+    testing = DataSet(test, False, TESTINGSIZE)
     M00,M10,M01,M11 = logisticregression.test(testing, tabLabel,TESTINGSIZE)
-    print("M00",M00)
-    print("M01",M01)
-    print("M10",M10)
-    print("M11",M11)
+
+    print("M00",M00,"M10",M01)
+    print("M01",M10,"M11",M11)
     print("Ratio de reussite pour le testing",(M00+M11)/float(M00+M01+M10+M11))
+
+    plt.figure(1)
+    plt.plot(T, avg_loss)
+    plt.title('Average Loss in function of the number of steps T')
+    plt.ylabel('average loss')
+    plt.xlabel('step = 100')
+    plt.show()
