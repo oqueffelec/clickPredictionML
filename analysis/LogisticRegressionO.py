@@ -37,7 +37,7 @@ class Weights:
              self.w_gender * self.w_gender + \
              self.w_depth * self.w_depth + \
              self.w_position * self.w_position
-        for w in self.w_tokens.values():
+        for w in self.w_tokens:
             l2 += w * w
         return math.sqrt(l2)
 
@@ -83,7 +83,6 @@ class LogisticRegression:
     # @return {Weights} the final trained weights.
     # ==========================
     def train(self, dataset, lambduh, step, avg_loss):
-
         N = dataset.size
         weights= Weights()
         n_epoch = 1
@@ -94,7 +93,6 @@ class LogisticRegression:
         count = 0
         nbStep = 100
         T = np.linspace(0,N,N/nbStep)
-
         for epoch in range(n_epoch):
             while (dataset.hasNext()):
                 instance = dataset.nextInstance()
@@ -125,6 +123,8 @@ class LogisticRegression:
                     avg_loss[int(count / nbStep)] = (1 / (2 * count)) * (error * error) + avg_loss[int(count / nbStep) - 1]
                 count += 1
 
+        print('\n')
+        print('\n')
         print("train DONE")
         return weights,N00,N10,N01,N11,T,avg_loss
 
@@ -160,6 +160,8 @@ class LogisticRegression:
     # @param tabLabel {array[TESTINGSIZE]}
     # @param TESTINGSIZE {Int}
     def test(self,dataset,tabLabel,TESTINGSIZE):
+        print('\n')
+        print("TESTING ...")
         M00=0
         M01=0
         M10=0
@@ -181,26 +183,34 @@ class LogisticRegression:
         return M00,M10,M01,M11
 
 
+
+
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    TRAININGSIZE = 50000
-    TESTINGSIZE = 50000
+    train = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
+    test_label = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
+    test = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+    TRAININGSIZE = 5000
+    TESTINGSIZE = 50
+    lambduh=[0.1, 1,10,100,1000,10000]
+    norm=[]
+    step=0.01
+    for l in lambduh:
+        avg_loss = np.zeros((int(TRAININGSIZE/100),1))
+        T = []
+        training = DataSet(train, True, TRAININGSIZE)
+        logisticregression = LogisticRegression()
+        poids,N00,N10,N01,N11,T,avg_loss = logisticregression.train(training, l, step, avg_loss)
+        norm.append(poids.l2_norm())
+        print("LAMBDA = ",l)
+        print("STEP = ",step)
+        print(poids)
+        print("N00",N00,"N10",N10) # N10 est un click qui est predis unclicked
+        print("N01",N01,"N11",N11) # N01 est un not click qui est predis click
+        print("Ratio de reussite pour le training",(N00+N11)/float(N00+N01+N10+N11))
+        print("Average ctr for training ",(N10+N11)/float(N00+N01+N10+N11))
+        print("Average ctr for training predicted",(N01+N11)/float(N00+N01+N10+N11))
 
-    avg_loss = np.zeros((int(TRAININGSIZE/100),1))
-    T = []
-
-    train = "/home/rasendrasoa/workspace/data/train.txt"
-    test_label = "/home/rasendrasoa/workspace/data/test_label.txt"
-    test = "/home/rasendrasoa/workspace/data/test.txt"
-
-    training = DataSet(train, True, TRAININGSIZE)
-    logisticregression = LogisticRegression()
-    poids,N00,N10,N01,N11,T,avg_loss = logisticregression.train(training, 0.001, 0.1, avg_loss)
-
-    print(poids)
-    print("N00",N00,"N10",N10)
-    print("N01",N01,"N11",N11)
-    print("Ratio de reussite pour le training",(N00+N11)/float(N00+N01+N10+N11))
 
     tabLabel = logisticregression.test_labelTomatrix(test_label)
     testing = DataSet(test, False, TESTINGSIZE)
@@ -209,8 +219,18 @@ if __name__ == '__main__':
     print("M00",M00,"M10",M01)
     print("M01",M10,"M11",M11)
     print("Ratio de reussite pour le testing",(M00+M11)/float(M00+M01+M10+M11))
+    print("Average ctr for testing",(M10+M11)/float(M00+M01+M10+M11))
+    print("Average ctr for testing predicted",(M01+M11)/float(M00+M01+M10+M11))
+
 
     plt.figure(1)
+    plt.plot(lambduh, norm)
+    plt.title('l2 norm as a function of lambduh')
+    plt.ylabel('l2 norm')
+    plt.xlabel('lambduh')
+    plt.show()
+
+    plt.figure(2)
     plt.plot(T, avg_loss)
     plt.title('Average Loss in function of the number of steps T')
     plt.ylabel('average loss')
