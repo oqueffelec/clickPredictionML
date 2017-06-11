@@ -228,7 +228,7 @@ if __name__ == '__main__':
     plt.title('l2 norm as a function of lambduh')
     plt.ylabel('l2 norm')
     plt.xlabel('lambduh')
-    plt.show()
+
 
     plt.figure(2)
     plt.plot(T, avg_loss)
