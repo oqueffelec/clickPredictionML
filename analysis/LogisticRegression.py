@@ -243,14 +243,15 @@ class LogisticRegression:
             while (dataset.hasNext()):
                 instance = dataset.nextInstance()
                 prediction =self.sigmoid(self.compute_weight_feature_product(weights,instance))
+                bayes=prediction/(1-prediction)
                 error =  instance.clicked - prediction
                 if(instance.clicked==0):
-                    if(prediction<0.5):
+                    if(bayes<1):
                         N00+=1
                     else:
                         N01+=1
                 else:
-                    if(prediction<0.5):
+                    if(bayes<1):
                         N10+=1
                     else:
                         N11+=1
@@ -281,9 +282,9 @@ class LogisticRegression:
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    train = "/home/rasendrasoa/workspace/data/train.txt"
-    test_label = "/home/rasendrasoa/workspace/data/test_label.txt"
-    test = "/home/rasendrasoa/workspace/data/test.txt"
+    train = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/train.txt"
+    test_label = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test_label.txt"
+    test = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test.txt"
     TRAININGSIZE = 50000
     TESTINGSIZE = 50
     lambduh=[0.01,0.1]
