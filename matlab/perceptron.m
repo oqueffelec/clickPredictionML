@@ -112,7 +112,7 @@ y=[-1 1 1 1];
 
 % Algo moindre carr?s
 w_mc_or=zeros(n+1,1);
-alpha=1;
+alpha=0.1;
 K=67;
 for compteur=1:K
     indice=randperm(l);
@@ -187,13 +187,13 @@ grid on
 %% Donn?es s?parables
 clear all
 % l le nombre de donn?es, n la dimension des donn?es
-l=20;
+l=12;
 n=2;
 
 % Systeme avec 2 classes separables 
 
-x=[0 1 1; 1 1 1; 2 3 1; 3 1 1;4 5 1;6 1 1;7 2  1;6 2 1;2 2 1; 3 3 1; 8 9 1;10 9 1; 12 8 1;10 10 1; 11 11 1;7 13 1;9 12 1;13 10 1;13 11 1;9 9 1];
-y=[-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 1 1 1 1 1 1 1 1 1 1];
+x=[2 2 1; 3 3 1; 8 9 1;10 9 1; 12 8 1;10 10 1; 11 11 1;7 13 1;9 12 1;13 10 1;13 11 1;9 9 1];
+y=[ -1 -1 1 1 1 1 1 1 1 1 1 1];
 
 % Algo perceptron
 wp=zeros(n+1,1);
@@ -228,7 +228,7 @@ for j=1:l
 end
 hold off
 grid on 
-
+%%
 % Algo moindre carr?s
 w_mc=zeros(n+1,1);
 alpha=1;
@@ -260,4 +260,73 @@ for j=1:l
 end
 hold off
 grid on 
+
+%% Click Prediction
+
+% Training
+
+clear all;
+
+[clicked,depth,position,userid,age,gender,tokens] = textread('/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/train.txt','%d%d%d%d%d%d%s','delimiter','|');
+
+x=[clicked,depth,position,userid,age,gender];
+nb=1000000;
+x=x(1:nb,:);
+
+% l le nombre de donn?es, n la dimension des donn?es
+l=nb;
+n=6;
+
+
+y=x(:,1)';
+for i=1:nb
+    if(y(i)==0)
+        y(i)=-1;
+    end
+end
+        
+
+% Algo perceptron
+wp=zeros(n,1);
+k=0;
+K=6;
+for compteur=1:K
+    indice=randperm(l);
+    for i=1:l
+        i=indice(i);
+        if(y(i)*(x(i,:)*wp)<=0)
+            wp=wp+y(i)*x(i,:)';
+            k=k+1;
+        end
+    end
+end
+
+% Prediction 
+
+[depth,position,userid,age,gender,tokens] = textread('/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test.txt','%d%d%d%d%d%s','delimiter','|');
+
+x=[depth,position,userid,age,gender];
+x=x(1:nb,:);
+
+wp=wp(2:n);
+
+for i=1:nb
+    if x(i,:)*wp>=0
+        prediction(i)=1;
+    else
+        prediction(i)=0;
+    end
+end
+
+% Erreur 
+
+[label] = textread('/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test_label.txt','%f','delimiter','|');
+
+label=label(1:nb);
+
+erreur=abs(prediction-label');
+erreur_pct=sum(erreur)/nb;
+
+indice_label=find(label>0);
+indice_prediction=find(prediction>0);
 
