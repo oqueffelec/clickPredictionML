@@ -281,9 +281,9 @@ class LogisticRegression:
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    train = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/train.txt"
-    test_label = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test_label.txt"
-    test = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test.txt"
+    train = "/home/rasendrasoa/workspace/data/train.txt"
+    test_label = "/home/rasendrasoa/workspace/data/data/test_label.txt"
+    test = "/home/rasendrasoa/workspace/data/data/test.txt"
     TRAININGSIZE = 50000
     TESTINGSIZE = 50
     lambduh=[0.01,0.1]
