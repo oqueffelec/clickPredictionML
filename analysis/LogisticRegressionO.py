@@ -82,43 +82,46 @@ class LogisticRegression:
     # hyperparameters. Return the weights, and record the cumulative loss.
     # @return {Weights} the final trained weights.
     # ==========================
-    def split(self, dataset):
+    def split(self, dataset, size):
         clicked=[]
         unclicked=[]
         i=0
         j=0
         instance=dataset.nextInstance()
-        while(i<50):
-            if(dataset.nextInstance().clicked==0):
+        while(i<size):
+            if(instance.clicked==0):
                 instance=dataset.nextInstance()
             else:
                 clicked.append(instance)
+                instance=dataset.nextInstance()
                 i+=1
-        while(j<50):
-            if(dataset.nextInstance().clicked==1):
+        while(j<size):
+            if(instance.clicked==1):
                 instance=dataset.nextInstance()
             else:
                 unclicked.append(instance)
+                instance=dataset.nextInstance()
                 j+=1
         return clicked,unclicked
 
     def regularised_train(self, dataset, lambduh, step, avg_loss):
-        N = dataset.size
+        N = dataset.size/200
         weights= Weights()
         n_epoch = 1
         N00=0
         N01=0
         N10=0
         N11=0
+        mse=[]
         count = 0
         nbStep = 100
+        loss=0
         T = np.linspace(0,N,N/nbStep)
-        clicked,unclicked=self.split(dataset)
-        size=len(clicked)
+        clicked,unclicked=self.split(dataset,N)
         for epoch in range(n_epoch):
-            for i in range(2*size):
+            for i in range(N):
                 r=random.randint(0,1)
-                j=random.randint(0,size-1)
+                j=random.randint(0,N-1)
                 if(r==0):
                     instance = clicked[j]
                 else:
@@ -144,10 +147,11 @@ class LogisticRegression:
                 for indice in instance.tokens:
                     weights.w_tokens[indice]= (1-step*lambduh/N)*weights.w_tokens[indice]+step*error
                 # record the average loss for each step 100
-                avg_loss[0] = (1 / 2) * (error * error)
+                loss = loss + 10*(error * error)
                 j = count % nbStep
-                if (j == 0 and count / nbStep != 0):
-                    avg_loss[int(count / nbStep)] = (1 / (2 * count)) * (error * error) + avg_loss[int(count / nbStep) - 1]
+                if (j == 0 and count / nbStep != 0 and count!=0):
+                    avg_loss[int(count / nbStep)] = (1000000 / (2 * count)) * loss
+                    print(avg_loss[int(count / nbStep)])
                 count += 1
 
         print("train DONE")
@@ -229,7 +233,7 @@ class LogisticRegression:
     # @param dataset {DataSet}
     # @param tabLabel {array[TESTINGSIZE]}
     # @param TESTINGSIZE {Int}
-    def test(self,dataset,tabLabel,TESTINGSIZE):
+    def test(self,dataset,tabLabel,TESTINGSIZE,poids):
         print('\n')
         print("TESTING ...")
         M00=0
@@ -309,12 +313,12 @@ class LogisticRegression:
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    train = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/train.txt"
-    test_label = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test_label.txt"
-    test = "/home/oqueffelec/Documents/gitPAO/clicks_prediction/data/test.txt"
-    TRAININGSIZE = 50000
-    TESTINGSIZE = 50
-    lambduh=[0.01,0.1]
+    train = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
+    test_label = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
+    test = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+    TRAININGSIZE = 2000000
+    TESTINGSIZE = 5000
+    lambduh=[0.01]
     step=0.01
 
     # # perform simple training
@@ -376,7 +380,7 @@ if __name__ == '__main__':
         print('Performing Regularised Training...')
         poids,N00,N10,N01,N11,T,avg_loss = logisticregression.regularised_train(training, l, step, avg_loss)
         norm.append(poids.l2_norm())
-        print('TRAININGSIZE =', TRAININGSIZE)
+        print('TRAININGSIZE =', TRAININGSIZE/200)
         print("LAMBDA = ",l)
         print("STEP = ",step)
         print(poids)
@@ -390,7 +394,7 @@ if __name__ == '__main__':
     # # testing on test data set
     # tabLabel = logisticregression.test_labelTomatrix(test_label)
     # testing = DataSet(test, False, TESTINGSIZE)
-    # M00,M10,M01,M11 = logisticregression.test(testing, tabLabel,TESTINGSIZE)
+    # M00,M10,M01,M11 = logisticregression.test(testing, tabLabel,TESTINGSIZE,poids)
     #
     # print("M00",M00,"M10",M01)
     # print("M01",M10,"M11",M11)
@@ -406,9 +410,9 @@ if __name__ == '__main__':
     # plt.xlabel('lambduh')
     #
     #
-    # plt.figure(2)
-    # plt.plot(T, avg_loss)
-    # plt.title('Average Loss in function of the number of steps T')
-    # plt.ylabel('average loss')
-    # plt.xlabel('step = 100')
-    # plt.show()
+    plt.figure(2)
+    plt.plot(avg_loss)
+    plt.title('Average Loss in function of the number of steps T')
+    plt.ylabel('average loss')
+    plt.xlabel('step = 100')
+    plt.show()
