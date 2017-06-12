@@ -16,12 +16,13 @@ class BasicAnalysis:
   # @return [{Int}] the unique tokens in the dataset
   # ==========================
   def uniq_tokens(self, dataset):
-
+    X =[]
     instance = dataset.nextInstance()
     while dataset.hasNext():
         y = instance.tokens
         # tokens uniques de la ligne i
         x = np.unique(y)
+        X.append(x)
         instance = dataset.nextInstance()
     X = np.array(x)
     # tokens uniques de X = [x1' x2' ... xi' ... xn']'
@@ -84,25 +85,24 @@ class BasicAnalysis:
   def average_ctr(self, dataset):
     temp = 0
     count = 0
+    x = []
     while dataset.hasNext():
-      if dataset.nextInstance().clicked == 1:
-        count += 1
-
-    ctr = count/dataset.size
-    return ctr
+      temp = dataset.nextInstance().clicked
+      x.append(temp)
+    return np.sum(x)/dataset.size
 
 if __name__ == '__main__':
 
   TRAININGSIZE = 2335859
 
-  fname = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
+  fname = "/home/rasendrasoa/workspace/data/train.txt"
   training = DataSet(fname, True, TRAININGSIZE)
   analysis = BasicAnalysis()
 
   t1 = time.clock()
-  ctr = analysis.average_ctr(training)
+  #ctr = analysis.average_ctr(training)
   t2 = time.clock()
-  print("Average CTR = ",ctr*100,"%")
+  #print("Average CTR = ",ctr*100,"%")
   print("temps de calcul pour la moyenne : ",t2-t1 ,'secondes')
 
 
@@ -110,8 +110,9 @@ if __name__ == '__main__':
   X = analysis.uniq_tokens(training)
   t2 = time.clock()
   print('there are ',X.size,' unique tokens')
+  print(X)
   print('temps de calcul unique tokens ', t2 - t1, "secondes")
-  training = DataSet("/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt", True, TRAININGSIZE)
+  training = DataSet("/home/rasendrasoa/workspace/data/train.txt", True, TRAININGSIZE)
   analysis = BasicAnalysis()
 
   # unique_users=analysis.uniq_users(training)
