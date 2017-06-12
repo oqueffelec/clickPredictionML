@@ -269,7 +269,7 @@ name "Figure 1"
 
 
 \begin_inset Graphics
-	filename 2-supervised-vs-unsupervised-1.png
+	filename img/2-supervised-vs-unsupervised-1.png
 	scale 40
 
 \end_inset
@@ -474,7 +474,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Perceptron_cant_choose.svg.png
+	filename img/perceptron1.png
 	scale 40
 
 \end_inset
@@ -515,7 +515,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename algo-perceptron.png
+	filename img/algo-perceptron.png
 	scale 50
 
 \end_inset
@@ -612,7 +612,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename gradientdescent.png
+	filename img/gradientdescent.png
 	scale 50
 
 \end_inset
@@ -1801,11 +1801,11 @@ Résultats pour les différents systèmes :
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename systOR.png
+	filename img/systOR.png
 	scale 35
 
 \end_inset
@@ -1835,11 +1835,11 @@ Système OR
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename systAND.png
+	filename img/systAND.png
 	scale 35
 
 \end_inset
@@ -1869,11 +1869,11 @@ Système AND
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename syst2classe.png
+	filename img/syst2classe.png
 	scale 35
 
 \end_inset
@@ -1903,11 +1903,11 @@ status collapsed
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename syst2classemuch.png
+	filename img/syst2classemuch.png
 	scale 35
 
 \end_inset
@@ -2001,7 +2001,7 @@ Dans le projet, le vecteur de paramètres
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 # This class represents the weights in the logistic regression model.
@@ -2123,6 +2123,1505 @@ regularised_train(self, dataset, lambduh, step, avg_loss).
 \emph default
 Cette fonction retourne les paramètres mis à jour ainsi que la courbe d'erreur
  cumulative.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+def train(self, dataset, lambduh, step, avg_loss): 
+\end_layout
+
+\begin_layout Plain Layout
+N = dataset.size 
+\end_layout
+
+\begin_layout Plain Layout
+weights= Weights() 
+\end_layout
+
+\begin_layout Plain Layout
+n_epoch = 1 
+\end_layout
+
+\begin_layout Plain Layout
+N00=0 
+\end_layout
+
+\begin_layout Plain Layout
+N01=0 
+\end_layout
+
+\begin_layout Plain Layout
+N10=0 
+\end_layout
+
+\begin_layout Plain Layout
+N11=0 
+\end_layout
+
+\begin_layout Plain Layout
+count = 0 
+\end_layout
+
+\begin_layout Plain Layout
+nbStep = 100 
+\end_layout
+
+\begin_layout Plain Layout
+T = np.linspace(0,N,N/nbStep) 
+\end_layout
+
+\begin_layout Plain Layout
+for epoch in range(n_epoch): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+while (dataset.hasNext()): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+instance = dataset.nextInstance() 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+prediction = self.predict(weights, instance) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+error = instance.clicked - prediction 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if(error==0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if(prediction==0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N00+=1 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+else: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N11+=1 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+else: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if(prediction==0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N10+=1 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+else: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N01+=1 
+\end_layout
+
+\begin_layout Plain Layout
+# if (error!=0):
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w0 = weights.w0 + step * error 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_age = weights.w_age + step * error * instance.age 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_gender = weights.w_gender + step * error * instance.gender 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_depth = weights.w_depth + step * error * instance.depth 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_position = weights.w_position + step * error * instance.position
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+for indice in instance.tokens: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_tokens[indice]= weights.w_tokens[indice]+step*error 
+\end_layout
+
+\begin_layout Plain Layout
+# record the average loss for each step 100 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+avg_loss[0] = (1 / 2) * (error * error) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+j = count % nbStep 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if (j == 0 and count / nbStep != 0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+avg_loss[int(count / nbStep)] = (1 / (2 * count)) * (error * error) + avg_loss[i
+nt(count / nbStep) - 1] 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+count += 1
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+print("train DONE") 
+\end_layout
+
+\begin_layout Plain Layout
+return weights,N00,N10,N01,N11,T,avg_loss
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+simple train
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+def train(self, dataset, lambduh, step, avg_loss): 
+\end_layout
+
+\begin_layout Plain Layout
+N = dataset.size 
+\end_layout
+
+\begin_layout Plain Layout
+weights= Weights() 
+\end_layout
+
+\begin_layout Plain Layout
+n_epoch = 1 
+\end_layout
+
+\begin_layout Plain Layout
+N00=0 
+\end_layout
+
+\begin_layout Plain Layout
+N01=0 
+\end_layout
+
+\begin_layout Plain Layout
+N10=0 
+\end_layout
+
+\begin_layout Plain Layout
+N11=0 
+\end_layout
+
+\begin_layout Plain Layout
+count = 0 
+\end_layout
+
+\begin_layout Plain Layout
+nbStep = 100 
+\end_layout
+
+\begin_layout Plain Layout
+T = np.linspace(0,N,N/nbStep) 
+\end_layout
+
+\begin_layout Plain Layout
+for epoch in range(n_epoch): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+while (dataset.hasNext()): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+instance = dataset.nextInstance() 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+prediction = self.predict(weights, instance) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+error = instance.clicked - prediction 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if(error==0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if(prediction==0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N00+=1 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+else: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N11+=1 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+else: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if(prediction==0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N10+=1 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+else: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+N01+=1 
+\end_layout
+
+\begin_layout Plain Layout
+# if (error!=0):
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w0 = (1-step*lambduh/N)*weights.w0 + step * error 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_age = (1-step*lambduh/N)*weights.w_age + step * error * instance.age
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_gender = (1-step*lambduh/N)*weights.w_gender + step * error * instance.ge
+nder 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_depth = (1-step*lambduh/N)*weights.w_depth + step * error * instance.dept
+h 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_position = (1-step*lambduh/N)*weights.w_position + step * error
+ * instance.position 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+for indice in instance.tokens: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+weights.w_tokens[indice]= weights.w_tokens[indice]+step*error 
+\end_layout
+
+\begin_layout Plain Layout
+# record the average loss for each step 100 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+avg_loss[0] = (1 / 2) * (error * error) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+j = count % nbStep 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+if (j == 0 and count / nbStep != 0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+avg_loss[int(count / nbStep)] = (1 / (2 * count)) * (error * error) + avg_loss[i
+nt(count / nbStep) - 1] 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+count += 1
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\emph default
+print("train DONE") 
+\end_layout
+
+\begin_layout Plain Layout
+return weights,N00,N10,N01,N11,T,avg_loss
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+simple train
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
