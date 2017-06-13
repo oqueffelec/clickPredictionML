@@ -80,6 +80,31 @@ Octave QUEFFELEC et Sandratra RASENDRASOA
 11/06/2017
 \end_layout
 
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList algorithm
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Part
 Introduction
 \end_layout
@@ -301,6 +326,265 @@ s(cercle bleu et croix rouge), tandis qu'en apprentisage non supervisé,
  Dans le cadre de notre projet, nous travaillons en apprentissage supervisé,
  nous possédons ainsi plusieurs jeux de données correspondants à X et Y,
  que nous préciserons dans la partie pratique.
+\end_layout
+
+\begin_layout Section
+Regression Lineaire
+\end_layout
+
+\begin_layout Standard
+La regression lineaire est une des méthodes d’apprentissage supervisé la
+ plus simple.
+ Une base de données d'apprentissage est un ensemble de couples entrée-sortie
+ 
+\begin_inset Formula $(x_{i},y_{i}),x∈X,y∈Y,i=1..n$
+\end_inset
+
+ qui suit une loi inconnu.
+ Un apprentissage est supervisé lorsque l’on connais les sorties 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+ et qu’elles nous permettent de guider le processus d’estimation.
+ Le but d'un algorithme d'apprentissage supervisé est donc de généraliser
+ pour des entrées inconnues ce qu'il a pu « apprendre » grâce aux données
+ déjà traitées, ceci de façon « raisonnable ».
+ On dit que la fonction de prédiction apprise doit avoir de bonnes garanties
+ en généralisation.
+ Le but d’un probleme de regression est de predire grace a cette fonction
+ de prediction la sortie y d’une entrée x dont on ne connais pas par avance
+ la veritable sortie.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/reglin1.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Prix des maisons dans l’etat d’Oregon
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Voici un graphe avec le prix des maisons dans l’etat d’Oregon en fonction
+ de leur superficie en mètre carré.
+ Le dataSet nous est donné.
+ Le probleme posé est le suivant : pour une superficie donnée, quel serais
+ le prix le plus adéquat de la maison ? 
+\begin_inset Newline newline
+\end_inset
+
+Pour cela, il nous faut modeliser ce jeux de données.
+ On pourrais par exemple tracer une droite en minimisant chaque distances
+ entre la droite et un point des données pour representer le modele au mieux.
+\begin_inset Newline newline
+\end_inset
+
+Pour ce faire, on dispose d’un training set, un ensemble de couple 
+\begin_inset Formula $(x_{i},y_{i})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/reglin2.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Modélisation du jeu de données
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A l’aide du training set, l’algorithme d’apprentissage doit determiner une
+ fonction h.
+ Cette fonction dois predire un y pour chaque entree x passé en entré de
+ la fonction.
+\end_layout
+
+\begin_layout Standard
+Generalement, cette fonction est defini dans l’absolu comme : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $h(x)=<w,x>,x∈R^{n},w∈R^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dans notre cas de regression lineaire, on aurais quelquechose de la forme
+ : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $h(x)=w_{0}+w_{1}*x,x∈R^{2},w∈R^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+En somme, il “suffit” que notre algo determine correctement les coefficients
+ 
+\begin_inset Formula $w_{0}$
+\end_inset
+
+ et 
+\begin_inset Formula $w_{1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Regression Logistique
+\end_layout
+
+\begin_layout Standard
+La regression logistique est un cas particulier de la regression lineaire,
+ c’est un modele de regression binomiale.
+ Ainsi, la variable de sortie prends 2 modalités : 
+\begin_inset Formula $y={0,1}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+On cherche à predire une probabilité d’appartenance à une classe ou non.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Regle de decision de Bayes :
+\emph default
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $D(x)=C1$
+\end_inset
+
+si 
+\begin_inset Formula $P(C1|X)/P(C2|X)>1$
+\end_inset
+
+, 
+\begin_inset Formula $C2$
+\end_inset
+
+ sinon
+\end_layout
+
+\begin_layout Standard
+Avec 
+\begin_inset Formula $P(C1|X)=exp(wTx)/(1+exp(wTx))$
+\end_inset
+
+.
+ La fonction logistique associé donne donc : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/reglog.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Fonction logistique associée à D(x)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
