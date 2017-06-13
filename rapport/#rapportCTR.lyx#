@@ -304,6 +304,257 @@ s(cercle bleu et croix rouge), tandis qu'en apprentisage non supervisé,
 \end_layout
 
 \begin_layout Section
+Regression Lineaire
+\end_layout
+
+\begin_layout Standard
+La regression lineaire est une des méthodes d’apprentissage supervisé la
+ plus simple.
+ Une base de données d'apprentissage est un ensemble de couples entrée-sortie
+ 
+\begin_inset Formula $(x_{i},y_{i}),x∈X,y∈Y,i=1..n$
+\end_inset
+
+ qui suit une loi inconnu.
+ Un apprentissage est supervisé lorsque l’on connais les sorties 
+\begin_inset Formula $y_{i}$
+\end_inset
+
+ et qu’elles nous permettent de guider le processus d’estimation.
+ Le but d'un algorithme d'apprentissage supervisé est donc de généraliser
+ pour des entrées inconnues ce qu'il a pu « apprendre » grâce aux données
+ déjà traitées, ceci de façon « raisonnable ».
+ On dit que la fonction de prédiction apprise doit avoir de bonnes garanties
+ en généralisation.
+ Le but d’un probleme de regression est de predire grace a cette fonction
+ de prediction la sortie y d’une entrée x dont on ne connais pas par avance
+ la veritable sortie.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/reglin1.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Prix des maisons dans l’etat d’Oregon
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Voici un graphe avec le prix des maisons dans l’etat d’Oregon en fonction
+ de leur superficie en mètre carré.
+ Le dataSet nous est donné.
+ Le probleme posé est le suivant : pour une superficie donnée, quel serais
+ le prix le plus adéquat de la maison ? 
+\begin_inset Newline newline
+\end_inset
+
+Pour cela, il nous faut modeliser ce jeux de données.
+ On pourrais par exemple tracer une droite en minimisant chaque distances
+ entre la droite et un point des données pour representer le modele au mieux.
+\begin_inset Newline newline
+\end_inset
+
+Pour ce faire, on dispose d’un training set, un ensemble de couple 
+\begin_inset Formula $(x_{i},y_{i})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/reglin2.jpg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Modélisation du jeu de données
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A l’aide du training set, l’algorithme d’apprentissage doit determiner une
+ fonction h.
+ Cette fonction dois predire un y pour chaque entree x passé en entré de
+ la fonction.
+\end_layout
+
+\begin_layout Standard
+Generalement, cette fonction est defini dans l’absolu comme : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $h(x)=<w,x>,x∈R^{n},w∈R^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dans notre cas de regression lineaire, on aurais quelquechose de la forme
+ : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $h(x)=w_{0}+w_{1}*x,x∈R^{2},w∈R^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+En somme, il “suffit” que notre algo determine correctement les coefficients
+ 
+\begin_inset Formula $w_{0}$
+\end_inset
+
+ et 
+\begin_inset Formula $w_{1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Regression Logistique
+\end_layout
+
+\begin_layout Standard
+La regression logistique est un cas particulier de la regression lineaire,
+ c’est un modele de regression binomiale.
+ Ainsi, la variable de sortie prends 2 modalités : 
+\begin_inset Formula $y={0,1}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+On cherche à predire une probabilité d’appartenance à une classe ou non.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Regle de decision de Bayes :
+\emph default
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $D(x)=C1$
+\end_inset
+
+si 
+\begin_inset Formula $P(C1|X)/P(C2|X)>1$
+\end_inset
+
+, 
+\begin_inset Formula $C2$
+\end_inset
+
+ sinon
+\end_layout
+
+\begin_layout Standard
+Avec 
+\begin_inset Formula $P(C1|X)=exp(wTx)/(1+exp(wTx))$
+\end_inset
+
+.
+ La fonction logistique associé donne donc : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Fonction logistique associée à D(x)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 Fonction de coût
 \end_layout
 
@@ -3081,7 +3332,7 @@ Evaluation du modèle
 
 \begin_layout Standard
 L'évaluation est réalisée pour 
-\begin_inset Formula $\lambda=\{0.01,0.1,1\}$
+\begin_inset Formula $\lambda=\{0.01\}$
 \end_inset
 
 pour la régularisation et le logreg.
@@ -3323,6 +3574,385 @@ Average ctr for training 0.04212
 
 \begin_layout Itemize
 Average ctr for training predicted 0.04226
+\end_layout
+
+\begin_layout Subsubsection
+LogRegression
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="3">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Prédiction ŷ / Vérité y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Positifs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Négatifs
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Positifs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+45989
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1898
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Négatifs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1905
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+208
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Ratio de reussite pour le training 0.92394 
+\end_layout
+
+\begin_layout Itemize
+Average ctr for training 0.04212 
+\end_layout
+
+\begin_layout Itemize
+Average ctr for training predicted 0.04226
+\end_layout
+
+\begin_layout Standard
+<Courbes d'erreur moyenne>
+\end_layout
+
+\begin_layout Section
+Interprétation des résultats
+\end_layout
+
+\begin_layout Section
+Répartition des tâches
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="3">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Tâches
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Octave
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Sandratra
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+taux de clic moyen 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+unique tokens 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+unique users 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Descente de gradient stochastique 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Régularisation 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Evaluation du modèle 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Rédaction du rapport 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+X
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conclusion
 \end_layout
 
 \end_body

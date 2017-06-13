@@ -105,7 +105,7 @@ class LogisticRegression:
         return clicked,unclicked
 
     def regularised_train(self, dataset, lambduh, step, avg_loss):
-        N = dataset.size/200
+        N = int(dataset.size/200)
         weights= Weights()
         n_epoch = 1
         N00=0
@@ -313,9 +313,9 @@ class LogisticRegression:
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
-    train = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/train.txt"
-    test_label = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test_label.txt"
-    test = "/Users/Octave/Documents/ASIBIS/gitPAO/clicks_prediction/data/test.txt"
+    train = "/home/rasendrasoa/workspace/data/train.txt"
+    test_label = "/home/rasendrasoa/workspace/data/test_label.txt"
+    test = "/home/rasendrasoa/workspace/data/test.txt"
     TRAININGSIZE = 2000000
     TESTINGSIZE = 5000
     lambduh=[0.01]

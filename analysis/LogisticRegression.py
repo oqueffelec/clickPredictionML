@@ -227,6 +227,58 @@ class LogisticRegression:
 
 
 
+    def logreg(self, dataset, lambduh, step, avg_loss):
+
+        N = dataset.size
+        weights= Weights()
+        n_epoch = 1
+        N00=0
+        N01=0
+        N10=0
+        N11=0
+        count = 0
+        nbStep = 100
+        T = np.linspace(0,N,N/nbStep)
+        for epoch in range(n_epoch):
+            while (dataset.hasNext()):
+                instance = dataset.nextInstance()
+                prediction =self.sigmoid(self.compute_weight_feature_product(weights,instance))
+                bayes=prediction/(1-prediction)
+                error =  instance.clicked - prediction
+                if(instance.clicked==0):
+                    if(bayes<1):
+                        N00+=1
+                    else:
+                        N01+=1
+                else:
+                    if(bayes<1):
+                        N10+=1
+                    else:
+                        N11+=1
+                # if (error!=0):
+                weights.w0 = (1-step*lambduh/N)*weights.w0 + step * error
+                weights.w_age = (1-step*lambduh/N)*weights.w_age + step * error * instance.age
+                weights.w_gender = (1-step*lambduh/N)*weights.w_gender + step * error * instance.gender
+                weights.w_depth = (1-step*lambduh/N)*weights.w_depth + step * error * instance.depth
+                weights.w_position = (1-step*lambduh/N)*weights.w_position + step * error * instance.position
+                for indice in instance.tokens:
+                    weights.w_tokens[indice]= (1-step*lambduh/N)*weights.w_tokens[indice]+step*error
+                # record the average loss for each step 100
+                avg_loss[0] = (1 / 2) * (error * error)
+                j = count % nbStep
+                if (j == 0 and count / nbStep != 0):
+                    avg_loss[int(count / nbStep)] = (1 / (2 * count)) * (error * error) + avg_loss[int(count / nbStep) - 1]
+                count += 1
+
+        print("train DONE")
+        return weights,N00,N10,N01,N11,T,avg_loss
+
+
+    def sigmoid(self,z):
+        return 1/(1+math.exp(-1*z))
+
+
+
 
 if __name__ == '__main__':
     # TODO: Fill in your code here
@@ -235,11 +287,11 @@ if __name__ == '__main__':
     test = "/home/rasendrasoa/workspace/data/test.txt"
     TRAININGSIZE = 50000
     TESTINGSIZE = 50
-    lambduh=[0.01,0.1,1]
-    norm=[]
+    lambduh=[0.01,0.1]
     step=0.01
 
     # perform simple training
+    norm=[]
     for l in lambduh:
         avg_loss = np.zeros((int(TRAININGSIZE/100),1))
         T = []
@@ -261,7 +313,31 @@ if __name__ == '__main__':
         print("Average ctr for training ",(N10+N11)/float(N00+N01+N10+N11))
         print("Average ctr for training predicted",(N01+N11)/float(N00+N01+N10+N11))
 
+    # perform logisticregression training
+    norm=[]
+    for l in lambduh:
+        avg_loss = np.zeros((int(TRAININGSIZE/100),1))
+        T = []
+        training = DataSet(train, True, TRAININGSIZE)
+        logisticregression = LogisticRegression()
+        print('\n')
+        print('\n')
+
+        print('Performing logreg Training...')
+        poids,N00,N10,N01,N11,T,avg_loss = logisticregression.logreg(training, l, step, avg_loss)
+        norm.append(poids.l2_norm())
+        print('TRAININGSIZE =', TRAININGSIZE)
+        print("LAMBDA = ",l)
+        print("STEP = ",step)
+        print(poids)
+        print("N00",N00,"N10",N10) # N10 est un click qui est predis unclicked
+        print("N01",N01,"N11",N11) # N01 est un not click qui est predis click
+        print("Ratio de reussite pour le training",(N00+N11)/float(N00+N01+N10+N11))
+        print("Average ctr for training ",(N10+N11)/float(N00+N01+N10+N11))
+        print("Average ctr for training predicted",(N01+N11)/float(N00+N01+N10+N11))
+
     # perform regularised training
+    norm=[]
     for l in lambduh:
         avg_loss = np.zeros((int(TRAININGSIZE/100),1))
         T = []
