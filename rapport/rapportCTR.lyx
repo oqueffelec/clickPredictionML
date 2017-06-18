@@ -3,6 +3,14 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\usepackage{hyperref}   % pour les liens cliquables de la table des matières
+ 
+\makeatletter
+\@addtoreset{section}{part}   % reprendre à partir de 1 les sections des parties suivantes.
+\makeatother
+ 
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -25,6 +33,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -3732,6 +3741,61 @@ Average ctr for training predicted 0.04226
 
 \begin_layout Section
 Interprétation des résultats
+\end_layout
+
+\begin_layout Standard
+Nous nous sommes heurtés à plusieurs problèmes pendant la mise en pratique
+ des differentes methodes.
+\begin_inset Newline newline
+\end_inset
+
+La gestion des données nous a été problematique sur certains aspects.
+ Nous avons decidé d’utiliser les classes pythons de l’enoncé afin d’acceder
+ plus simplement aux données.
+ Cependant, l’acces se fais instance par instance donc il nous faut stocker
+ les entrés t-1 si nous voulons les utilisés avec celle de t.
+ De plus, nous ne pouvions pas acceder à une instance particuliere i , l’acces
+ se faisant en sequentiel.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Les tokens sont pour chaque instance une liste de taille indefini d’index.
+ Ainsi pour gerer la mise a jour des tokens, nous avons decider d’utiliser
+ des SparseVector afin de ne pas avoir a creer de vecteurs trop couteux
+ en dimensions (le nombre de tokens au total s’eleve a plus de 1 million)
+ et de pouvoir gerer cette taille de tokens qui varie pour chaque instance.
+ Cette methode à été vite oublié car elle n’etait pas tres efficace de par
+ sa manipulation et de son temps à l’execution.
+ Nous avons opté finalement de creer un seul vecteur pour le poids des tokens,
+ de taille le nombre total des tokens, en utilisant la librairie numpy.
+\begin_inset Newline newline
+\end_inset
+
+Dans l’echantillon du training, les classes n’etaient pas representés de
+ maniere equitables.
+ En effet, la Classe 0 c’est à dire unclicked est présente dans 97% de l’echanti
+llon total et la classe 1 c’est a dire clicked seulement 3%.
+ Nous avons dabord decider d’effectuer un tirage avec remise des donnés…
+ Mais cela s’est revelé trop couteux pour nous donc nous avons tiré les
+ donnés sequentiellement.
+\begin_inset Newline newline
+\end_inset
+
+Dans les 2 cas, les resultas sont ambigus.
+ En effet, le taux de reussite est excessivement elevé mais le nombre de
+ Classe 1 predis par rapport aux Classe 1 total est tres faible.
+ Cela est du à la surpresence de la classe 0 par rapport à la classe 1.
+ L’algorithme considere alors la classe 1 comme une irregularité dans les
+ donnes.
+\begin_inset Newline newline
+\end_inset
+
+Apres la derniere seance, nous avons donc décidé de tirer aleatoirement
+ les donnés en “piochant” à tour de role un coup la classe 1 puis la Classe
+ 0.
+ Les resultats sont beaucoup plus parlant.
+ 
 \end_layout
 
 \begin_layout Section
