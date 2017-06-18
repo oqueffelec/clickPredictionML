@@ -6,9 +6,7 @@
 \begin_preamble
 \usepackage{hyperref}   % pour les liens cliquables de la table des matières
  
-\makeatletter
-\@addtoreset{section}{part}   % reprendre à partir de 1 les sections des parties suivantes.
-\makeatother
+
  
 \end_preamble
 \use_default_options true
@@ -3979,7 +3977,7 @@ Apres la derniere seance, nous avons donc décidé de tirer aleatoirement
  
 \end_layout
 
-\begin_layout Section
+\begin_layout Part
 Répartition des tâches
 \end_layout
 
@@ -4229,7 +4227,7 @@ X
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Part
 Conclusion
 \end_layout
 
@@ -4322,6 +4320,28 @@ Il est aussi intéressant de voir l'intérêt croissant pour ce domaine.
  Il est excitant de voir que ce parcours est ainsi accessible à la majorité
  qui veut s'y intéresser, nous ne doutons pas un instant du brillant avenir
  de ce domaine.
+\end_layout
+
+\begin_layout Part
+Bibliographie
+\end_layout
+
+\begin_layout Enumerate
+Département ASI, Fouille de données : https://moodle.insa-rouen.fr/course/view.php?
+id=92
+\end_layout
+
+\begin_layout Enumerate
+T.
+ Hastie, R.
+ Tibshrani, J.
+ Friedman, The Elements of Statistical Learning: Data Mining, Inference,
+ and Prediction (Springer Verlag) : 
+\end_layout
+
+\begin_layout Enumerate
+University of Washington, Machine Learning for Big Data par Emily Fox :
+ http://courses.cs.washington.edu/courses/cse547/15sp/
 \end_layout
 
 \end_body

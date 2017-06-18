@@ -6,9 +6,7 @@
 \begin_preamble
 \usepackage{hyperref}   % pour les liens cliquables de la table des matières
  
-\makeatletter
-\@addtoreset{section}{part}   % reprendre à partir de 1 les sections des parties suivantes.
-\makeatother
+
  
 \end_preamble
 \use_default_options true
@@ -213,7 +211,8 @@ L'ensemble du projet a été réalisé en langage Python qui est un des langages
  Nous avons notamment utilisé les librairies Numpy et Scipy pour nos algorithmes.
  Nous avons aussi dans un premier temps réalisé quelques algorithmes sous
  Matlab pour se familiariser avec les jeux de données.
- 
+ Pour faciliter notre travail et permettre un suivi régulier, nos avons
+ utilisé le gestionnaire de source de la platforme MonProjet.
 \begin_inset Newline newline
 \end_inset
 
@@ -3735,8 +3734,188 @@ Average ctr for training 0.04212
 Average ctr for training predicted 0.04226
 \end_layout
 
+\begin_layout Subsubsection
+Tirage aléatoire 
+\end_layout
+
 \begin_layout Standard
-<Courbes d'erreur moyenne>
+Dans ce dernier cas, la probabilité d'obtenir la classe 1 est la même que
+ d'obtenir la classe 0.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="3">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Prédiction ŷ / Vérité y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Positifs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Négatifs
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Positifs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2809
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2165
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Négatifs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2150
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2876
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Ratio de reussite pour le training 0.5685
+\end_layout
+
+\begin_layout Itemize
+Average ctr for training 0.5041
+\end_layout
+
+\begin_layout Itemize
+Average ctr for training predicted 0.5026
+\end_layout
+
+\begin_layout Subsection
+Courbe d'erreur moyenne
+\end_layout
+
+\begin_layout Standard
+On cherche à traver la courbe d'erreur moyenne 
+\begin_inset Formula $L$
+\end_inset
+
+ en fonction du nombre de pas 
+\begin_inset Formula $T$
+\end_inset
+
+, où
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+L(T)=\frac{1}{T}\sum_{t=1}^{T}(ŷ^{t}-y^{t})\text{²}
+\]
+
+\end_inset
+
+Dans le graphique suivant, on prend le cas où la probabilité d'obtenir un
+ clic/non-click est équiprobable (cf 10.1.4).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/averageloss.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Erreur moyenne en fonction du nombre de pas 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3745,60 +3924,60 @@ Interprétation des résultats
 
 \begin_layout Standard
 Nous nous sommes heurtés à plusieurs problèmes pendant la mise en pratique
- des differentes methodes.
-\begin_inset Newline newline
-\end_inset
+ des différentes méthodes.
+\end_layout
 
-La gestion des données nous a été problematique sur certains aspects.
- Nous avons decidé d’utiliser les classes pythons de l’enoncé afin d’acceder
+\begin_layout Itemize
+La gestion des données nous a été problématique sur certains aspects.
+ Nous avons decidé d’utiliser les classes pythons de l’enoncé afin d’accéder
  plus simplement aux données.
- Cependant, l’acces se fais instance par instance donc il nous faut stocker
- les entrés t-1 si nous voulons les utilisés avec celle de t.
- De plus, nous ne pouvions pas acceder à une instance particuliere i , l’acces
- se faisant en sequentiel.
+ Cependant, l’accès se fais instance par instance donc il nous faut stocker
+ les entrées t-1 si nous voulons les utiliser avec celle de t.
+ De plus, nous ne pouvions pas accéder à une instance particuliere i , l’accès
+ se faisant en séquentiel.
  
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-Les tokens sont pour chaque instance une liste de taille indefini d’index.
- Ainsi pour gerer la mise a jour des tokens, nous avons decider d’utiliser
- des SparseVector afin de ne pas avoir a creer de vecteurs trop couteux
- en dimensions (le nombre de tokens au total s’eleve a plus de 1 million)
- et de pouvoir gerer cette taille de tokens qui varie pour chaque instance.
- Cette methode à été vite oublié car elle n’etait pas tres efficace de par
- sa manipulation et de son temps à l’execution.
+\begin_layout Itemize
+Les tokens sont pour chaque instance une liste de taille indéfini d’index.
+ Ainsi pour gérer la mise à jour des tokens, nous avons décidé d’utiliser
+ des SparseVector afin de ne pas avoir a créer de vecteurs trop couteux
+ en dimensions (le nombre de tokens au total s’élève a plus de 1 million)
+ et de pouvoir gérer cette taille de tokens qui varie pour chaque instance.
+ Cette methode à été vite oublié car elle n’était pas tres efficace de par
+ sa manipulation et de son temps à l’exécution.
  Nous avons opté finalement de creer un seul vecteur pour le poids des tokens,
  de taille le nombre total des tokens, en utilisant la librairie numpy.
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-Dans l’echantillon du training, les classes n’etaient pas representés de
- maniere equitables.
+\begin_layout Itemize
+Dans l’échantillon du training, les classes n’etaient pas representées de
+ maniere équitables.
  En effet, la Classe 0 c’est à dire unclicked est présente dans 97% de l’echanti
 llon total et la classe 1 c’est a dire clicked seulement 3%.
- Nous avons dabord decider d’effectuer un tirage avec remise des donnés…
+ Nous avons d'abord decidé d’effectuer un tirage avec remise des données…
  Mais cela s’est revelé trop couteux pour nous donc nous avons tiré les
- donnés sequentiellement.
-\begin_inset Newline newline
-\end_inset
+ données séquentiellement.
+\end_layout
 
+\begin_layout Itemize
 Dans les 2 cas, les resultas sont ambigus.
  En effet, le taux de reussite est excessivement elevé mais le nombre de
  Classe 1 predis par rapport aux Classe 1 total est tres faible.
  Cela est du à la surpresence de la classe 0 par rapport à la classe 1.
- L’algorithme considere alors la classe 1 comme une irregularité dans les
+ L’algorithme considère alors la classe 1 comme une irrégularité dans les
  donnes.
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
+\begin_layout Itemize
 Apres la derniere seance, nous avons donc décidé de tirer aleatoirement
- les donnés en “piochant” à tour de role un coup la classe 1 puis la Classe
+ les données en “piochant” à tour de role un coup la classe 1 puis la Classe
  0.
  Les resultats sont beaucoup plus parlant.
  
 \end_layout
 
-\begin_layout Section
+\begin_layout Part
 Répartition des tâches
 \end_layout
 
@@ -4048,8 +4227,141 @@ X
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Part
 Conclusion
+\end_layout
+
+\begin_layout Standard
+Nous avons fais ce PAO dans l’optique qu’il nous serve d’introduction à
+ la matiere DataMining de 4eme année.
+ Nous n’avions aucune connaissance préalable en machine learning ni des
+ librairies s'y référant.
+ 
+\begin_inset Newline newline
+\end_inset
+
+Nous nous sommes familiarisés avec les librairies scientiques tels que numpy
+ et scipy et avons pu répondre concrètement à un problème d'apprentissage
+ supervisé.
+ En pratique, l'une des problématiques nécessitant le plus d'attention est
+ de pouvoir manipuler de manière intelligente les données.
+ C'est pour nous une rare occassion de travailler avec des données 
+\begin_inset Quotes eld
+\end_inset
+
+réelles
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Bien que les résultats semblent peu concluants, cette mise en situation
+ offre une vision concrète des problèmes auxquels nous allons nous heurter
+ dans notre parcours professionnel.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+So, what's next ?
+\emph default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/longroad.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The road to becoming a data scientist
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+Cette initiation nous a fait rendre compte du long parcours à réaliser pour
+ devenir un Data Scientist.
+ Si notre objectif au long terme n'est pas forcément de le devenir, cela
+ reste un atout indispensable de pouvoir approcher les notions abordées
+ dans ce tortueux chemin; un objectif pourrait ainsi être de pouvoir discuter
+ et comprendre les enjeux derrière ce vaste domaine.
+\begin_inset Newline newline
+\end_inset
+
+Il est aussi intéressant de voir l'intérêt croissant pour ce domaine.
+ Que se soit Google avec TensorFlow, ou python avec PyTorch, de plus en
+ plus de frameworks opensource permettent de construire facilement des modeles
+ d’apprentissage.
+ Il est excitant de voir que ce parcours est ainsi accessible à la majorité
+ qui veut s'y intéresser, nous ne doutons pas un instant du brillant avenir
+ de ce domaine.
+\end_layout
+
+\begin_layout Part
+Bibliographie
+\end_layout
+
+\begin_layout Enumerate
+Département ASI, Fouille de données : https://moodle.insa-rouen.fr/course/view.php?
+id=92
+\end_layout
+
+\begin_layout Enumerate
+NumPy for Matlab users : https://docs.scipy.org/doc/numpy-dev/user/numpy-for-matla
+b-users.html#numpy-for-matlab-users
+\end_layout
+
+\begin_layout Enumerate
+T.
+ Hastie, R.
+ Tibshrani, J.
+ Friedman, The Elements of Statistical Learning: Data Mining, Inference,
+ and Prediction (Springer Verlag) : http://statweb.stanford.edu/~tibs/ElemStatLear
+n/printings/ESLII_print10.pdf
+\end_layout
+
+\begin_layout Enumerate
+University of Washington, Machine Learning for Big Data par Emily Fox :
+ http://courses.cs.washington.edu/courses/cse547/15sp/
+\end_layout
+
+\begin_layout Enumerate
+Cours sur le perceptron : http://pageperso.lif.univ-mrs.fr/~francois.denis/IAAM1/tra
+nsparents-Cours3.pdf
+\end_layout
+
+\begin_layout Enumerate
+Coursera, Machine lerning par Andrew NG : https://fr.coursera.org/learn/machine-le
+arning
+\end_layout
+
+\begin_layout Enumerate
+Wikipédia : https://fr.wikipedia.org/wiki/Apprentissage_supervis%C3%A9 
 \end_layout
 
 \end_body
